@@ -45,7 +45,7 @@ void add_child(Node *fa, Node *ch){
 void pre_order(Node *t){
     if(t == NULL)
         return;
-    for(int i = 0; i < n; i++){
+    for(int i = 0; i < space_num; i++){
         printf(" ");
     }
     if(t->type == 0){
