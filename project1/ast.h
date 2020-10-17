@@ -1,7 +1,7 @@
 #ifndef AST
 #define AST
 extern char* yytext;
-#define CHILD_MAX_NUM = 50
+#define CHILD_MAX_NUM 50
 typedef struct ASTNode {
     int lineNum;
     char* name;
