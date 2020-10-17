@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "syntax.tab.h"
-#include "apt.h"
+#include "ast.h"
 int space_num = 0;
 
 ASTNode* newASTNode(int lineNum, char* name, void *val){
