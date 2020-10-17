@@ -13,6 +13,7 @@ typedef struct ASTNode {
         char* stringVal;
     }val;
 }ASTNode;
+ASTNode *root;
 ASTNode* newASTNode(int lineNum, char* name, void *val);
 void addChild(ASTNode *root, ASTNode *leaf);
 void printAST;
