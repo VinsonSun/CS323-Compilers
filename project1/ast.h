@@ -6,7 +6,7 @@ typedef struct ASTNode {
     int lineNum;
     char* name;
     int seqNum;
-    struct AST *child[CHILD_MAX_NUM];
+    struct ASTNode *child[CHILD_MAX_NUM];
     union val{
         int intVal;
         float floatVal;
@@ -16,5 +16,5 @@ typedef struct ASTNode {
 ASTNode *root;
 ASTNode* newASTNode(int lineNum, char* name, void *val);
 void addChild(ASTNode *root, ASTNode *leaf);
-void printAST;
+void printAST();
 #endif
