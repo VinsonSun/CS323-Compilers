@@ -3,7 +3,7 @@
     #include <string.h>
     #include <stdio.h>
     #include <math.h>
-    #include "ast.h"
+    #include "tree.h"
     #include "syntax.tab.h"
     int yycolumn = 1;
     extern int error_num;
@@ -25,69 +25,69 @@ letter [_a-zA-Z]
 %%
 
 "struct" {
-    yylval.node = newASTNode(yylineno, "STRUCT", NULL);
+    yylval.node = new_node(yylineno, "STRUCT", STRUCT, NULL);
     return STRUCT;
 }
 "return" {
-    yylval.node = newASTNode(yylineno, "RETURN", NULL);
+    yylval.node = new_node(yylineno, "RETURN", RETURN, NULL);
     return RETURN;
 }
 "if" {
-    yylval.node = newASTNode(yylineno, "IF", NULL);
+    yylval.node = new_node(yylineno, "IF", IF, NULL);
     return IF;
 }
 "else" {
-    yylval.node = newNode(yylineno, "ELSE", NULL);
+    yylval.node = new_node(yylineno, "ELSE", ELSE, NULL);
     return ELSE;
 }
 "while" {
-    yylval.node = newASTNode(yylineno, "WHILE", NULL);
+    yylval.node = new_node(yylineno, "WHILE", WHILE, NULL);
     return WHILE;
 }
 "int"|"float"|"char" {
     char *s = malloc(strlen(yytext) + 1);
     strcpy(s, yytext);
-    yylval.node = newASTNode(yylineno, "TYPE", s);
+    yylval.node = new_node(yylineno, "TYPE", TYPE, s);
     return TYPE;
 }
 0|[1-9]{digit}* {
     unsigned int val = atol(yytext);
-    yylval.node = newASTNode(yylineno, "INT", &val);
+    yylval.node = new_node(yylineno, "INT", INT, &val);
     return INT;
 }
 {digit}*\.{digit}*[eE][\+\-]?{digit}+ {
     float val = strtof(yytext, NULL);
-    yylval.node = newASTNode(yylineno, "FLOAT", &val);
+    yylval.node = new_node(yylineno, "FLOAT", FLOAT, &val);
     return FLOAT;
 }
 {digit}+\.{digit}+ {
     float val = strtof(yytext, NULL);
-    yylval.node = newASTNode(yylineno, "FLOAT", &val);
+    yylval.node = new_node(yylineno, "FLOAT", FLOAT, &val);
     return FLOAT;
 }
 {hex_head}[0-9a-zA-Z]*{not_hex_char}+[0-9a-zA-Z]* {
     printf("Error type A at Line %d: Illegal hexadecimal number '%s'.\n", yylineno, yytext);
     error_num++;
     int val = 0;
-    yylval.node = newASTNode(yylineno, "INT", &val);
+    yylval.node = new_node(yylineno, "INT", INT, &val);
     return INT;
 }
 {hex_head}{hex_char}+ {
     unsigned int val = 0;
     sscanf(yytext, "%x", &val);
-    yylval.node = newASTNode(yylineno, "INT", &val);
+    yylval.node = new_node(yylineno, "INT", INT, &val);
     return INT;
 }
 {letter}({digit}|{letter})* {
     char *s = malloc(strlen(yytext) + 1);
     strcpy(s, yytext);
-    yylval.node = newASTNode(yylineno, "ID", s);
+    yylval.node = new_node(yylineno, "ID", ID, s);
     return ID;
 }
 \'{letter}\' {
     char *s = malloc(strlen(yytext) + 1);
     strcpy(s, yytext);
-    yylval.node = newASTNode(yylineno, "CHAR", s);
+    yylval.node = new_node(yylineno, "CHAR", CHAR, s);
     return CHAR;
 }
 "//"[^\n]* {}
@@ -99,108 +99,108 @@ letter [_a-zA-Z]
     }
  }
 ";" {
-    yylval.node = newASTNode(yylineno, "SEMI", NULL);
+    yylval.node = new_node(yylineno, "SEMI", SEMI, NULL);
     return SEMI;
 }
 "," {
-    yylval.node = newASTNode(yylineno, "COMMA", NULL);
+    yylval.node = new_node(yylineno, "COMMA", COMMA, NULL);
     return COMMA;
 }
 "=" {
-    yylval.node = newASTNode(yylineno, "ASSIGN", NULL);
+    yylval.node = new_node(yylineno, "ASSIGN", ASSIGN, NULL);
     return ASSIGN;
 }
 ">" {
     char s[3] = "";
     strcpy(s, yytext);
-    yylval.node = newASTNode(yylineno, "GT", s);
+    yylval.node = new_node(yylineno, "GT", GT, s);
     return GT;
 }
 "<" {
     char s[3] = "";
     strcpy(s, yytext);
-    yylval.node = newASTNode(yylineno, "LT", s);
+    yylval.node = new_node(yylineno, "LT", LT, s);
     return LT;
 }
 ">=" {
     char s[3] = "";
     strcpy(s, yytext);
-    yylval.node = newASTNode(yylineno, "GE", s);
+    yylval.node = new_node(yylineno, "GE", GE, s);
     return GE;
 }
 "<=" {
     char s[3] = "";
     strcpy(s, yytext);
-    yylval.node = newASTNode(yylineno, "LE", s);
+    yylval.node = new_node(yylineno, "LE", LE, s);
     return LE;
 }
 "==" {
     char s[3] = "";
     strcpy(s, yytext);
-    yylval.node = newASTNode(yylineno, "EQ", s);
+    yylval.node = new_node(yylineno, "EQ", EQ, s);
     return EQ;
 }
 "!=" {
     char s[3] = "";
     strcpy(s, yytext);
-    yylval.node = newASTNode(yylineno, "NE", s);
+    yylval.node = new_node(yylineno, "NE", NE, s);
     return NE;
 }
 
 \+ {
-    yylval.node = newASTNode(yylineno, "PLUS", NULL);
+    yylval.node = new_node(yylineno, "PLUS", PLUS, NULL);
     return PLUS;
 }
 "-" {
-    yylval.node = newASTNode(yylineno, "MINUS", NULL);
+    yylval.node = new_node(yylineno, "MINUS", MINUS, NULL);
     return MINUS;
 }
 \* {
-    yylval.node = newASTNode(yylineno, "STAR", NULL);
+    yylval.node = new_node(yylineno, "STAR", STAR, NULL);
     return STAR;
 }
 \/ {
-    yylval.node = newASTNode(yylineno, "DIV", NULL);
+    yylval.node = new_node(yylineno, "DIV", DIV, NULL);
     return DIV;
 }
 "&&" {
-    yylval.node = newASTNode(yylineno, "AND", NULL);
+    yylval.node = new_node(yylineno, "AND", AND, NULL);
     return AND;
 }
 "||" {
-    yylval.node = newASTNode(yylineno, "OR", NULL);
+    yylval.node = new_node(yylineno, "OR", OR, NULL);
     return OR;
 }
 \. {
-    yylval.node = newASTNode(yylineno, "DOT", NULL);
+    yylval.node = new_node(yylineno, "DOT", DOT, NULL);
     return DOT;
 }
 "!" {
-    yylval.node = newASTNode(yylineno, "NOT", NULL);
+    yylval.node = new_node(yylineno, "NOT", NOT, NULL);
     return NOT;
 }
 \( {
-    yylval.node = newASTNode(yylineno, "LP", NULL);
+    yylval.node = new_node(yylineno, "LP", LP, NULL);
     return LP;
 }
 \) {
-    yylval.node = newASTNode(yylineno, "RP", NULL);
+    yylval.node = new_node(yylineno, "RP", RP, NULL);
     return RP;
 }
 \[ {
-    yylval.node = newASTNode(yylineno, "LB", NULL);
+    yylval.node = new_node(yylineno, "LB", LB, NULL);
     return LB;
 }
 \] {
-    yylval.node = newASTNode(yylineno, "RB", NULL);
+    yylval.node = new_node(yylineno, "RB", RB, NULL);
     return RB;
 }
 \{ {
-    yylval.node = newASTNode(yylineno, "LC", NULL);
+    yylval.node = new_node(yylineno, "LC", LC, NULL);
     return LC;
 }
 \} {
-    yylval.node = newASTNode(yylineno, "RC", NULL);
+    yylval.node = new_node(yylineno, "RC", RC, NULL);
     return RC;
 }
 \n {yycolumn = 1;}
