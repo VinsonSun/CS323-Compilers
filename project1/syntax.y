@@ -1,15 +1,15 @@
 %{
     #include "lex.yy.c"
     #include <stdio.h>
-    #include "ast.h"
+    #include "tree.h"
     extern int error_num;
 %}
 
 %error-verbose
 %locations
-
+/* declared types */
 %union {
-    ASTNode* node;
+    Node* node;
 }
 
 /* declared tokens */
@@ -42,20 +42,20 @@
 /* High-level Definition */
 Program : ExtDefList{
     if($1 == NULL){
-        $$ = newASTNode(yylineno, "Program", NULL);
+        $$ = new_node(yylineno, "Program", 0, NULL);
     }
     else {
-        $$ = newASTNode(@1.first_line, "Program", NULL);
+        $$ = new_node(@1.first_line, "Program", 0, NULL);
     }
-    addChild($$, $1);
+    add_child($$, $1);
     root = $$;
 }
     ;
 
 ExtDefList : ExtDef ExtDefList{
-    $$ = newASTNode(@1.first_line, "ExtDefList", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
+    $$ = new_node(@1.first_line, "ExtDefList", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
 }
     |{
     $$ = NULL;
@@ -63,132 +63,132 @@ ExtDefList : ExtDef ExtDefList{
     ;
 
 ExtDef : Specifier ExtDecList SEMI{
-    $$ = newASTNode(@1.first_line, "ExtDef", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "ExtDef", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     | Specifier SEMI{
-    $$ = newASTNode(@1.first_line, "ExtDef", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
+    $$ = new_node(@1.first_line, "ExtDef", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
 }
     | Specifier FunDec CompSt{
-    $$ = newASTNode(@1.first_line, "ExtDef", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "ExtDef", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     | Specifier FunDec SEMI{
-    $$ = newASTNode(@1.first_line, "ExtDef", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "ExtDef", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
     }
     ;
 
 ExtDecList : VarDec{
-    $$ = newASTNode(@1.first_line, "ExtDecList", NULL);
-    addChild($$, $1);
+    $$ = new_node(@1.first_line, "ExtDecList", 0, NULL);
+    add_child($$, $1);
 }
     | VarDec COMMA ExtDecList{
-    $$ = newASTNode(@1.first_line, "ExtDecList", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "ExtDecList", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     ;
 
 /* Specifiers */
 Specifier : TYPE{
-    $$ = newASTNode(@1.first_line, "Specifier", NULL);
-    addChild($$, $1);
+    $$ = new_node(@1.first_line, "Specifier", 0, NULL);
+    add_child($$, $1);
 }
     | StructSpecifier{
-    $$ = newASTNode(@1.first_line, "Specifier", NULL);
-    addChild($$, $1);
+    $$ = new_node(@1.first_line, "Specifier", 0, NULL);
+    add_child($$, $1);
 }
     ;
 
 StructSpecifier : STRUCT ID LC DefList RC{
-    $$ = newASTNode(@1.first_line, "StructSpecifier", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
-    addChild($$, $4);
-    addChild($$, $5);
+    $$ = new_node(@1.first_line, "StructSpecifier", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
+    add_child($$, $4);
+    add_child($$, $5);
 }
     | STRUCT ID{
-    $$ = newASTNode(@1.first_line, "StructSpecifier", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
+    $$ = new_node(@1.first_line, "StructSpecifier", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
 }
     ;
 
 /* Declarators */
 VarDec : ID{
-    $$ = newASTNode(@1.first_line, "VarDec", NULL);
-    addChild($$, $1);
+    $$ = new_node(@1.first_line, "VarDec", 0, NULL);
+    add_child($$, $1);
 }
     | VarDec LB INT RB{
-    $$ = newASTNode(@1.first_line, "VarDec", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
-    addChild($$, $4);
+    $$ = new_node(@1.first_line, "VarDec", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
+    add_child($$, $4);
 }
     | VarDec LB INT error{}
     ;
 
 FunDec : ID LP VarList RP{
-    $$ = newASTNode(@1.first_line, "FunDec", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
-    addChild($$, $4);
+    $$ = new_node(@1.first_line, "FunDec", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
+    add_child($$, $4);
 }
     | ID LP RP{
-    $$ = newASTNode(@1.first_line, "FunDec", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "FunDec", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     ;
 
 VarList : ParamDec COMMA VarList{
-    $$ = newASTNode(@1.first_line, "VarList", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "VarList", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     | ParamDec{
-    $$ = newASTNode(@1.first_line, "VarList", NULL);
-    addChild($$, $1);
+    $$ = new_node(@1.first_line, "VarList", 0, NULL);
+    add_child($$, $1);
 }
     ;
 
 ParamDec : Specifier VarDec{
-    $$ = newASTNode(@1.first_line, "ParamDec", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
+    $$ = new_node(@1.first_line, "ParamDec", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
 }
 
 /* Statements */
 CompSt : LC DefList StmtList RC{
-    $$ = newASTNode(@1.first_line, "CompSt", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
-    addChild($$, $4);
+    $$ = new_node(@1.first_line, "CompSt", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
+    add_child($$, $4);
 }
     | error RC{}
     | LC DefList StmtList error{}
     ;
 
 StmtList : Stmt StmtList{
-    $$ = newASTNode(@1.first_line, "StmtList", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
+    $$ = new_node(@1.first_line, "StmtList", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
 }
     |{
     $$ = NULL;
@@ -196,56 +196,56 @@ StmtList : Stmt StmtList{
     ;
 
 Stmt : Exp SEMI{
-    $$ = newASTNode(@1.first_line, "Stmt", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
+    $$ = new_node(@1.first_line, "Stmt", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
 }
 
     | CompSt{
-    $$ = newASTNode(@1.first_line, "Stmt", NULL);
-    addChild($$, $1);
+    $$ = new_node(@1.first_line, "Stmt", 0, NULL);
+    add_child($$, $1);
 }
     | RETURN Exp SEMI{
-    $$ = newASTNode(@1.first_line, "Stmt", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Stmt", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
 
     | IF LP Exp RP Stmt{
-    $$ = newASTNode(@1.first_line, "Stmt", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
-    addChild($$, $4);
-    addChild($$, $5);
+    $$ = new_node(@1.first_line, "Stmt", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
+    add_child($$, $4);
+    add_child($$, $5);
 }
     | IF LP Exp RP Stmt ELSE Stmt{
-    $$ = newASTNode(@1.first_line, "Stmt", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
-    addChild($$, $4);
-    addChild($$, $5);
-    addChild($$, $6);
-    addChild($$, $7);
+    $$ = new_node(@1.first_line, "Stmt", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
+    add_child($$, $4);
+    add_child($$, $5);
+    add_child($$, $6);
+    add_child($$, $7);
 }
     | WHILE LP Exp RP Stmt{
-    $$ = newASTNode(@1.first_line, "Stmt", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
-    addChild($$, $4);
-    addChild($$, $5);
+    $$ = new_node(@1.first_line, "Stmt", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
+    add_child($$, $4);
+    add_child($$, $5);
 }
     | error SEMI{}
     ;
 
 /* Local Definitions */
 DefList : Def DefList{
-    $$ = newASTNode(@1.first_line, "DefList", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
+    $$ = new_node(@1.first_line, "DefList", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
 }
     |{
     $$ = NULL;
@@ -253,187 +253,187 @@ DefList : Def DefList{
     ;
 
 Def : Specifier DecList SEMI{
-    $$ = newASTNode(@1.first_line, "Def", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Def", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     ;
 
 DecList : Dec{
-    $$ = newASTNode(@1.first_line, "DecList", NULL);
-    addChild($$, $1);
+    $$ = new_node(@1.first_line, "DecList", 0, NULL);
+    add_child($$, $1);
 }
     | Dec COMMA DecList{
-    $$ = newASTNode(@1.first_line, "DecList", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "DecList", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     ;
 
 Dec : VarDec{
-    $$ = newASTNode(@1.first_line, "Dec", NULL);
-    addChild($$, $1);
+    $$ = new_node(@1.first_line, "Dec", 0, NULL);
+    add_child($$, $1);
 }
     | VarDec ASSIGN Exp{
-    $$ = newASTNode(@1.first_line, "Dec", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Dec", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     ;
 
 /* Expressions */
 Exp : Exp ASSIGN Exp{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     | Exp AND Exp{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     | Exp OR Exp{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     | Exp GE Exp{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }   
     | Exp LT Exp{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     | Exp GT Exp{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     | Exp LE Exp{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }   
     | Exp EQ Exp{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     | Exp NE Exp{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     | Exp PLUS Exp{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     | Exp MINUS Exp{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     | Exp STAR Exp{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     | Exp DIV Exp{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     | LP Exp RP{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     | MINUS Exp %prec UMINUS{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
 }
     | NOT Exp{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
 }
     | ID LP Args RP{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
-    addChild($$, $4);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
+    add_child($$, $4);
 }
     | ID LP RP{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     | Exp LB Exp RB{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
-    addChild($$, $4);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
+    add_child($$, $4);
 }
     | Exp DOT ID{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     | ID{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
 }
     | INT{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
 }
     | CHAR{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
 }
     | FLOAT{
-    $$ = newASTNode(@1.first_line, "Exp", NULL);
-    addChild($$, $1);
+    $$ = new_node(@1.first_line, "Exp", 0, NULL);
+    add_child($$, $1);
 }
     | error RP{}
     | Exp LB Exp error{}
     ;
 
 Args : Exp COMMA Args{
-    $$ = newASTNode(@1.first_line, "Args", NULL);
-    addChild($$, $1);
-    addChild($$, $2);
-    addChild($$, $3);
+    $$ = new_node(@1.first_line, "Args", 0, NULL);
+    add_child($$, $1);
+    add_child($$, $2);
+    add_child($$, $3);
 }
     | Exp{
-    $$ = newASTNode(@1.first_line, "Args", NULL);
-    addChild($$, $1);
+    $$ = new_node(@1.first_line, "Args", 0, NULL);
+    add_child($$, $1);
 }
     ;
 
