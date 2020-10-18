@@ -69,7 +69,7 @@ void pre_order(Node *t){
         printf("%s\n", t->name);
     }
     space_num += 2;
-    for(int i = 0; i < t->child_num; i++){
+    for(int i = 0; i < t->childNum; i++){
         pre_order(t->child[i]);
     }
     space_num -= 2;
