@@ -105,8 +105,8 @@ MULTI_LINE_COMMENT  \/\*.*\*\/
     printf("Error type A at Line %d: unknown lexeme %s\n", yylineno, yytext);
     error_num++;
     int val = 0;
-    yylval.node = newASTNode(yylineno, "ERROR", ERROR, NULL, 0);
-    return Error;
+    yylval.node = newASTNode(yylineno, "INT", INT, NULL, 0);
+    return INT;
 }
 {HEX_INT} {
     unsigned int val = 0;
@@ -122,8 +122,8 @@ MULTI_LINE_COMMENT  \/\*.*\*\/
 }
 {WRONG_ID} {
     printf("Error type A at Line %d: unknown lexeme %s\n", yylineno, yytext);
-    yylval.node = newASTNode(yylineno, "ERROR", ERROR, NULL, 0);
-    return Error;
+    yylval.node = newASTNode(yylineno, "ID", ID, NULL, 0);
+    return ID;
 }
 {CHAR} {
     char *s = malloc(strlen(yytext) + 1);
@@ -133,8 +133,8 @@ MULTI_LINE_COMMENT  \/\*.*\*\/
 }
 {WRONG_HEX_CHAR} {
     printf("Error type A at Line %d: unknown lexeme %s\n", yylineno, yytext);
-    yylval.node = newASTNode(yylineno, "ERROR", ERROR, NULL, 0);
-    return Error;
+    yylval.node = newASTNode(yylineno, "CHAR", CHAR, NULL, 0);
+    return CHAR;
     
 }
 {SEMI} {
@@ -241,22 +241,5 @@ MULTI_LINE_COMMENT  \/\*.*\*\/
 {RC} {
     yylval.node = newASTNode(yylineno, "RC", RC, NULL, 0);
     return RC;
-}
-{SINGLE_LINE_COMMENT}   ;
-
-"/*"  BEGIN(IN_COMMENT);
-
-\n      ;
-[\t ]+ ;
-.       {
-    printf("Error type A at Line %d: unknown lexeme %s\n", yylineno, yytext);
-    yylval.node = newASTNode(yylineno, "ERROR", ERROR, NULL, 0);
-    return Error;
-}
-<IN_COMMENT>{
-"*/"      BEGIN(INITIAL);
-[^*\n]+   // eat comment in chunks
-"*"       // eat the lone star
-\n        ;
 }
 %%
