@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "tree.h"
+#include "ast.h"
 extern int yyparse();
 extern int yyrestart();
 int error_num = 0;
