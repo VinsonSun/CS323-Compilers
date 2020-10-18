@@ -1,7 +1,7 @@
 #ifndef TREE
 #define TREE
 #define MAX_CHILD 10
-typedef struct _Node
+typedef struct Node
 {
     int line;
     int visited;
@@ -9,7 +9,7 @@ typedef struct _Node
     int type;
     char *name;
     int childNum;
-    struct _Node *child[MAX_CHILD];
+    struct Node *child[MAX_CHILD];
     union Val{
         int i;
         float f;
