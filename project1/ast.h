@@ -1,5 +1,5 @@
-#ifndef TREE
-#define TREE
+#ifndef AST
+#define AST
 #define MAX_CHILD 10
 typedef struct Node
 {
@@ -18,5 +18,5 @@ typedef struct Node
 }Node;
 Node *root;
 Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...);
-void print_tree();
+void traverse();
 #endif
