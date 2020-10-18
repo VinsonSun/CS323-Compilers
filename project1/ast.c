@@ -15,15 +15,6 @@ Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...)
     node->name = malloc(strlen(nodeName) + 1);
     strcpy(node->name, nodeName);
     
-    va_list childs;
-    if (childNum < 0) return node;
-    va_start(childs, childNum);
-    for(int i=0; i<childNum; i++) {
-        node->child[i] = va_arg(childs, Node*);
-        printf(node->child[i]->name);
-    }
-    va_end(childs);
-    
     if(type == INT){
         node->val.i = *(int *)val;
     }else if(type == FLOAT){
@@ -36,6 +27,18 @@ Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...)
     }else{
         node->val.i = 0;
     }
+    
+    va_list childs;
+    if (childNum <= 0) {
+        return node;
+    }
+    va_start(childs, childNum);
+    for(int i=0; i<childNum; i++) {
+        node->child[i] = va_arg(childs, Node*);
+        printf("%u\n", i);
+    }
+    va_end(childs);
+    
     return node;
 }
 
