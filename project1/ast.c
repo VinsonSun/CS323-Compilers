@@ -13,6 +13,7 @@ Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...)
     node->type = type;
     node->visited = node->code_visited = 0;
     node->name = malloc(strlen(nodeName) + 1);
+    node->childNum = childNum;
     strcpy(node->name, nodeName);
     
     if(type == INT){
@@ -66,7 +67,6 @@ void pre_order(Node *t){
         printf("%s\n", t->name);
     }
     space_num += 2;
-    printf("%u\n", t->childNum);
     for(int i = 0; i < t->childNum; i++){
         pre_order(t->child[i]);
     }
