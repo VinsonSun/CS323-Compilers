@@ -9,5 +9,5 @@ peda-session-*
 lex.yy.c
 syntax.tab.[hc]
 bin
-!*/test/*.out
+
 .vscode/
