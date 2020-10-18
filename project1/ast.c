@@ -19,7 +19,7 @@ ASTNode *newASTNode(int line, char *nodeName, int type, void *val, int childNum,
         node->val.floatVal = *(float *)val;
     }else if(!strcmp(node->name, "CHAR")){
         node->val.stringVal = (char*)val;
-    }else(type == ID || type == TYPE || type == GT || type == LT || type == LE || type == GE || type == NE || type == EQ){
+    }else{
         node->val.stringVal = malloc(strlen(val) + 1);
         strcpy(node->val.stringVal, val);
     }
