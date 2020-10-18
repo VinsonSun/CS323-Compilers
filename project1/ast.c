@@ -17,18 +17,12 @@ ASTNode *newASTNode(int line, char *nodeName, int type, void *val, int childNum,
         node->val.intVal = *(int *)val;
     }else if(node->name, "FLOAT"){
         node->val.floatVal = *(float *)val;
-//     }else if(type == CHAR || type == ID || type == TYPE || type == GT || type == LT || type == LE || type == GE || type == NE || type == EQ){
-//         node->val.stringVal = (char*)val;
-//     }else if(type == ID || type == TYPE || type == GT || type == LT || type == LE || type == GE || type == NE || type == EQ){
-//         node->val.stringVal = malloc(strlen(val) + 1);
-//         strcpy(node->val.stringVal, val);
-//     }else{
-//         node->val.intVal = 0;
-//     }
-    }else {
+    }else if(!strcmp(node->name, "CHAR")){
+        node->val.stringVal = (char*)val;
+    }else(type == ID || type == TYPE || type == GT || type == LT || type == LE || type == GE || type == NE || type == EQ){
         node->val.stringVal = malloc(strlen(val) + 1);
         strcpy(node->val.stringVal, val);
-    }    
+    }
     
     va_list childs;
     if (childNum <= 0) {
