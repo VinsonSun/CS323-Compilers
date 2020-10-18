@@ -10,6 +10,7 @@ Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...)
     node->line = line;
     node->type = type;
     node->childNum = childNum;
+    node->name = malloc(strlen(nodeName) + 1);
     strcpy(node->name, nodeName);
     
     if(type == INT){
