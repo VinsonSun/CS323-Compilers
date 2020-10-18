@@ -13,7 +13,7 @@ int main(int argc, char **argv){
         yyrestart(f);
         yyparse();
         if(error_num==0)
-            print_tree();
+            traverse();
     }
     return 0;
 }
