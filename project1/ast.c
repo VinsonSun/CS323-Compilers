@@ -20,6 +20,7 @@ Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...)
     va_start(childs, childNum);
     for(int i=0; i<childNum; i++) {
         node->child[i] = va_arg(childs, Node*);
+        printf("add child\n");
     }
     va_end(childs);
     
