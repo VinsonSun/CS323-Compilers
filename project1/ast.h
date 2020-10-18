@@ -10,7 +10,7 @@ typedef struct ASTNode
     struct Node *child[MAX_CHILD];
     union Val{
         int intVal;
-        float floadVal;
+        float floatVal;
         char *stringVal;
     }val;
 }ASTNode;
