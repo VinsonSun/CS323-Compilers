@@ -1,4 +1,4 @@
-#include "tree.h"
+#include "ast.h"
 #include "syntax.tab.h"
 #include <stdlib.h>
 #include <stdio.h>
