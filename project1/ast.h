@@ -16,5 +16,5 @@ typedef struct ASTNode
 }ASTNode;
 ASTNode *root;
 ASTNode *newASTNode(int line, char *nodeName, int type, void *val, int childNum, ...);
-void traverse(Node *t, int spaceNum);
+void traverse(ASTNode *t, int spaceNum);
 #endif
