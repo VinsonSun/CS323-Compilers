@@ -248,7 +248,6 @@ Exp : Exp ASSIGN Exp{
 }
     | ID LP Args RP{
     $$ = new_node(@1.first_line, "Exp", 0, NULL, 4, $1, $2, $3, $4);
-    add_child($$, $1);
 }
     | ID LP RP{
     $$ = new_node(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3);
