@@ -3,7 +3,7 @@
     #include <string.h>
     #include <stdio.h>
     #include <math.h>
-    #include "tree.h"
+    #include "ast.h"
     #include "syntax.tab.h"
     int yycolumn = 1;
     extern int error_num;
