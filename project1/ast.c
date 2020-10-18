@@ -14,15 +14,14 @@ ASTNode *newASTNode(int line, char *nodeName, int type, void *val, int childNum,
     strcpy(node->name, nodeName);
     
     if(!strcmp(node->name, "INT")){
-        node->val.intVal = atoi(yytext);
+        node->val.intVal = *(int *)val;
     }else if(node->name, "FLOAT"){
-        node->val.floatVal = atof(yytext);
-    }else if(type == CHAR){
-        node->val.stringVal = (char*)val;
-    }else if(type == ID || type == TYPE || type == GT || type == LT || type == LE || type == GE || type == NE || type == EQ){
-        char* tmp = (char *)malloc(sizeof(char) * strlen(yytext));
-        strcpy(tmp, yytext);
-        node->val.stringVal = tmp;
+        node->val.floatVal = *(float *)val;
+    }else if(type == CHAR || (type == ID || type == TYPE || type == GT || type == LT || type == LE || type == GE || type == NE || type == EQ){
+//         node->val.stringVal = (char*)val;
+//     }else if(type == ID || type == TYPE || type == GT || type == LT || type == LE || type == GE || type == NE || type == EQ){
+        node->val.stringVal = malloc(strlen(val) + 1);
+        strcpy(node->val.stringVal, val);
     }else{
         node->val.intVal = 0;
     }
