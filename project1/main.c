@@ -13,7 +13,7 @@ int main(int argc, char **argv){
         yyrestart(f);
         yyparse();
         if(error_num==0)
-            traverse();
+            traverse(root, 0);
     }
     return 0;
 }
