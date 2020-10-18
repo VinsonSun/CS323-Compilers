@@ -35,7 +35,6 @@ Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...)
     va_start(childs, childNum);
     for(int i=0; i<childNum; i++) {
         node->child[i] = va_arg(childs, Node*);
-        printf("%u\n", i);
     }
     va_end(childs);
     
@@ -43,7 +42,6 @@ Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...)
 }
 
 void pre_order(Node *t){
-    printf("1 time\n");
     if(t == NULL)
         return;
     for(int i = 0; i < space_num; i++){
@@ -68,6 +66,7 @@ void pre_order(Node *t){
         printf("%s\n", t->name);
     }
     space_num += 2;
+    printf("%u\n", t->childNum);
     for(int i = 0; i < t->childNum; i++){
         pre_order(t->child[i]);
     }
