@@ -43,6 +43,7 @@ Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...)
 }
 
 void pre_order(Node *t, int space_number){
+    printf("%u\n", space_number);
     if(t == NULL)
         return;
     for(int i = 0; i < space_num; i++){
@@ -67,7 +68,7 @@ void pre_order(Node *t, int space_number){
         printf("%s\n", t->name);
     }
     for(int i = 0; i < t->childNum; i++){
-        pre_order(t->child[i], space_number+2);
+        pre_order(t->child[i], space_number);
     }
 }
 
