@@ -8,7 +8,7 @@ typedef struct _Node
     int code_visited;
     int type;
     char *name;
-    int child_num;
+    int childNum;
     struct _Node *child[MAX_CHILD];
     union Val{
         int i;
@@ -17,7 +17,6 @@ typedef struct _Node
     }val;
 }Node;
 Node *root;
-Node *new_node(int line, char *nodeName, int type, void *val);
-void add_child(Node *fa, Node *ch);
+Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...);
 void print_tree();
 #endif
