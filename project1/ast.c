@@ -42,7 +42,7 @@ Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...)
     return node;
 }
 
-void pre_order(Node *t){
+void pre_order(Node *t, space_number){
     if(t == NULL)
         return;
     for(int i = 0; i < space_num; i++){
@@ -66,14 +66,11 @@ void pre_order(Node *t){
     else{
         printf("%s\n", t->name);
     }
-    space_num += 2;
     for(int i = 0; i < t->childNum; i++){
-        pre_order(t->child[i]);
+        pre_order(t->child[i], space_number+2);
     }
-    space_num -= 2;
 }
 
 void print_tree(){
-    space_num = 0;
-    pre_order(root);
+    pre_order(root, 0);
 }
