@@ -1,7 +1,7 @@
 %{
     #include "lex.yy.c"
     #include <stdio.h>
-    #include "tree.h"
+    #include "ast.h"
     extern int error_num;
 %}
 
