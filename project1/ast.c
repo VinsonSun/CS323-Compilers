@@ -5,8 +5,8 @@
 #include <string.h>
 #include <stdarg.h>
 
-Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...){
-    Node *node = malloc(sizeof(Node));
+ASTNode *newASTNode(int line, char *nodeName, int type, void *val, int childNum, ...){
+    ASTNode *node = malloc(sizeof(ASTNode));
     node->line = line;
     node->type = type;
     node->childNum = childNum;
@@ -14,16 +14,16 @@ Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...)
     strcpy(node->name, nodeName);
     
     if(type == INT){
-        node->val.i = *(int *)val;
+        node->val.intVal = *(int *)val;
     }else if(type == FLOAT){
-        node->val.f = *(float *)val;
+        node->val.floatVal = *(float *)val;
     }else if(type == CHAR){
-        node->val.s = (char*)val;
+        node->val.stringVal = (char*)val;
     }else if(type == ID || type == TYPE || type == GT || type == LT || type == LE || type == GE || type == NE || type == EQ){
-        node->val.s = malloc(strlen(val) + 1);
-        strcpy(node->val.s, val);
+        node->val.stringVal = malloc(strlen(val) + 1);
+        strcpy(node->val.stringVal, val);
     }else{
-        node->val.i = 0;
+        node->val.intVal = 0;
     }
     
     va_list childs;
@@ -38,31 +38,26 @@ Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...)
     return node;
 }
 
-void traverse(Node *t, int spaceNum){
-    if(t == NULL)
+void traverse(ASTNode *node, int spaceNum){
+    if(node == NULL)
         return;
     for(int i = 0; i < spaceNum; i++){
         printf(" ");
     }
-    if(t->type == 0){
-        printf("%s (%d)\n", t->name, t->line);
+    if(node->type == 0){
+        printf("%s (%d)\n", node->name, node->line);
+    }else if(node->type == INT){
+        printf("%s: %u\n", node->name, node->val.intVal);
+    }else if(node->type == FLOAT){
+        printf("%s: %f\n", node->name, node->val.floadVal);
+    }else if(node->type == CHAR){
+        printf("%s: %s\n",node->name, node->val.stringVal);
+    }else if(node->type == ID || node->type == TYPE){
+        printf("%s: %s\n", node->name, node->val.stringVal);
+    }else{
+        printf("%s\n", node->name);
     }
-    else if(t->type == INT){
-        printf("%s: %u\n", t->name, t->val.i);
-    }
-    else if(t->type == FLOAT){
-        printf("%s: %f\n", t->name, t->val.f);
-    }
-    else if(t->type == CHAR){
-        printf("%s: %s\n",t->name, t->val.s);
-    }
-    else if(t->type == ID || t->type == TYPE){
-        printf("%s: %s\n", t->name, t->val.s);
-    }
-    else{
-        printf("%s\n", t->name);
-    }
-    for(int i = 0; i < t->childNum; i++){
-        traverse(t->child[i], spaceNum + 2);
+    for(int i = 0; i < node->childNum; i++){
+        traverse(node->child[i], spaceNum + 2);
     }
 }
