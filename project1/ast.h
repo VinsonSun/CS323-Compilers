@@ -7,7 +7,7 @@ typedef struct ASTNode
     int type;
     char *name;
     int childNum;
-    struct Node *child[MAX_CHILD];
+    struct ASTNode *child[MAX_CHILD];
     union Val{
         int intVal;
         float floatVal;
