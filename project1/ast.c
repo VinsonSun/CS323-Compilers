@@ -10,7 +10,6 @@ int space_num = 0;
 Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...){
     Node *node = malloc(sizeof(Node));
     node->line = line;
-    node->child_num = 0;
     node->type = type;
     node->visited = node->code_visited = 0;
     node->name = malloc(strlen(nodeName) + 1);
