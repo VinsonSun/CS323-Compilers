@@ -42,7 +42,7 @@ Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...)
     return node;
 }
 
-void pre_order(Node *t, space_number){
+void pre_order(Node *t, int space_number){
     if(t == NULL)
         return;
     for(int i = 0; i < space_num; i++){
