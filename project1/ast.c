@@ -39,7 +39,6 @@ Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...)
     va_start(childs, childNum);
     for(int i=0; i<childNum; i++) {
         node->child[i] = va_arg(childs, Node*);
-        printf("%s", node->child[i]->name);
     }
     va_end(childs);
     return node;
@@ -78,6 +77,5 @@ void pre_order(Node *t){
 
 void print_tree(){
     space_num = 0;
-    // pre_order(root);
-    printf("Successful");
+    pre_order(root);
 }
