@@ -3,10 +3,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 int space_num = 0;
 
 
-Node *new_node(int line, char *nodeName, int type, void *val){
+Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...){
     Node *node = malloc(sizeof(Node));
     node->line = line;
     node->child_num = 0;
@@ -34,12 +35,14 @@ Node *new_node(int line, char *nodeName, int type, void *val){
     else{
         node->val.i = 0;
     }
+    va_list childs;
+    if (childNum < 0) return node;
+    va_start(childs, childNum);
+    for(int i=0; i<childNum; i++) {
+        node->child[i] = va_arg(childs, Node);
+    }
+    va_end(childs);
     return node;
-}
-
-void add_child(Node *fa, Node *ch){
-    fa->child[fa->child_num] = ch;
-    fa->child_num++;
 }
 
 void pre_order(Node *t){
