@@ -22,7 +22,7 @@ ASTNode *newASTNode(int line, char *nodeName, int type, void *val, int childNum,
     }else if(type == ID || type == TYPE || type == GT || type == LT || type == LE || type == GE || type == NE || type == EQ){
         char* tmp = (char *)malloc(sizeof(char) * strlen(yytext));
         strcpy(tmp, yytext);
-        node->stringVal = tmp;
+        node->val.stringVal = tmp;
     }else{
         node->val.intVal = 0;
     }
