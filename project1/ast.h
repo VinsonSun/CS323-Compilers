@@ -4,8 +4,6 @@
 typedef struct Node
 {
     int line;
-    int visited;
-    int code_visited;
     int type;
     char *name;
     int childNum;
