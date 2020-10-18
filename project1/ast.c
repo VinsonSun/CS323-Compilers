@@ -38,7 +38,7 @@ Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...)
     if (childNum < 0) return node;
     va_start(childs, childNum);
     for(int i=0; i<childNum; i++) {
-        node->child[i] = va_arg(childs, Node);
+        node->child[i] = va_arg(childs, Node*);
     }
     va_end(childs);
     return node;
