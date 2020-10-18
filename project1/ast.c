@@ -36,14 +36,13 @@ Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...)
         node->child[i] = va_arg(childs, Node*);
     }
     va_end(childs);
-    
     return node;
 }
 
-void pre_order(Node *t, int space_num){
+void traverse(Node *t, int spaceNum){
     if(t == NULL)
         return;
-    for(int i = 0; i < space_num; i++){
+    for(int i = 0; i < spaceNum; i++){
         printf(" ");
     }
     if(t->type == 0){
@@ -65,10 +64,6 @@ void pre_order(Node *t, int space_num){
         printf("%s\n", t->name);
     }
     for(int i = 0; i < t->childNum; i++){
-        pre_order(t->child[i], space_num+2);
+        traverse(t->child[i], spaceNum + 2);
     }
-}
-
-void print_tree(){
-    pre_order(root, 0);
 }
