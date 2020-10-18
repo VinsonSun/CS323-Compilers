@@ -32,7 +32,7 @@ ASTNode *newASTNode(int line, char *nodeName, int type, void *val, int childNum,
     }
     va_start(childs, childNum);
     for(int i=0; i<childNum; i++) {
-        node->child[i] = va_arg(childs, Node*);
+        node->child[i] = va_arg(childs, ASTNode*);
     }
     va_end(childs);
     return node;
