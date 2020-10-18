@@ -1,7 +1,7 @@
 #ifndef AST
 #define AST
 #define MAX_CHILD 10
-typedef struct Node
+typedef struct ASTNode
 {
     int line;
     int type;
@@ -9,12 +9,12 @@ typedef struct Node
     int childNum;
     struct Node *child[MAX_CHILD];
     union Val{
-        int i;
-        float f;
-        char *s;
+        int intVal;
+        float floadVal;
+        char *stringVal;
     }val;
-}Node;
-Node *root;
-Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...);
+}ASTNode;
+ASTNode *root;
+ASTNode *newASTNode(int line, char *nodeName, int type, void *val, int childNum, ...);
 void traverse(Node *t, int spaceNum);
 #endif
