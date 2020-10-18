@@ -14,26 +14,7 @@ Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...)
     node->visited = node->code_visited = 0;
     node->name = malloc(strlen(nodeName) + 1);
     strcpy(node->name, nodeName);
-    for(int i = 0; i < MAX_CHILD; i++){
-        node->child[i] = NULL;
-    }
-    if(type == INT){
-        node->val.i = *(int *)val;
-    }
-    else if(type == FLOAT){
-        node->val.f = *(float *)val;
-    }
-    else if(type == CHAR){
-        node->val.s = (char*)val;
-    }
-    else if(type == ID || type == TYPE || type == GT || type == LT || type == LE ||
-    type == GE || type == NE || type == EQ){
-        node->val.s = malloc(strlen(val) + 1);
-        strcpy(node->val.s, val);
-    }
-    else{
-        node->val.i = 0;
-    }
+    
     va_list childs;
     if (childNum < 0) return node;
     va_start(childs, childNum);
@@ -41,6 +22,19 @@ Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...)
         node->child[i] = va_arg(childs, Node*);
     }
     va_end(childs);
+    
+    if(type == INT){
+        node->val.i = *(int *)val;
+    }else if(type == FLOAT){
+        node->val.f = *(float *)val;
+    }else if(type == CHAR){
+        node->val.s = (char*)val;
+    }else if(type == ID || type == TYPE || type == GT || type == LT || type == LE || type == GE || type == NE || type == EQ){
+        node->val.s = malloc(strlen(val) + 1);
+        strcpy(node->val.s, val);
+    }else{
+        node->val.i = 0;
+    }
     return node;
 }
 
