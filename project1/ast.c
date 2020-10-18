@@ -9,8 +9,6 @@ Node *new_node(int line, char *nodeName, int type, void *val, int childNum, ...)
     Node *node = malloc(sizeof(Node));
     node->line = line;
     node->type = type;
-    node->visited = node->code_visited = 0;
-    node->name = malloc(strlen(nodeName) + 1);
     node->childNum = childNum;
     strcpy(node->name, nodeName);
     
