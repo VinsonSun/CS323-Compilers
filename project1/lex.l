@@ -219,7 +219,7 @@ WRONG_CHAR      ('.+')
 }
 [ \t] {}
 . {
-    ERROR_A();
+    ERROR_TYPEA();
     return LEXEME_ERROR;
 }
 
