@@ -6,7 +6,7 @@
     #include "ast.h"
     #include "syntax.tab.h"
     int yycolumn = 1;
-    int error_num;
+    int error_num = 0;
     
     void yyerror(const char*s);
     
