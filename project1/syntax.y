@@ -183,5 +183,6 @@ Args :
 %%
 
 void yyerror(char const *msg){
-
+    printf("Error type B at Line %d: %s\n", yylineno, msg);
+    error_num++;
 }
