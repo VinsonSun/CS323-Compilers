@@ -44,8 +44,7 @@
 /* High-level Definition */
 Program : 
         ExtDefList{
-            if($1 == NULL){ $$ = newASTNode(yylineno, "Program", 0, NULL, 1, $1);} 
-            else { $$ = newASTNode(@1.first_line, "Program", 0, NULL, 1, $1);}
+            $$ = newASTNode(@1.first_line, "Program", 0, NULL, 1, $1);
             root = $$;
         }
     ;
