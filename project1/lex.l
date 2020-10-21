@@ -19,9 +19,6 @@
     #define ERROR_TYPEA() 
         printf("Error type A at Line %d: unknown lexeme %s\n", yylineno, yytext); 
         error_num++;
-    #define ERROR_TYPEB(lineno, msg)
-        printf("Error type B at Line %d: %s\n", lineo, msg);
-        error_num++;
 %}
 
 %option yylineno
@@ -87,7 +84,7 @@ WRONG_CHAR      ('.+')
     return ID;
 }
 {WRONG_ID} {
-    ERROR_A();
+    ERROR_TYPEA();
     return ID;
 }
 {CHAR} {
@@ -97,7 +94,7 @@ WRONG_CHAR      ('.+')
     return CHAR;
 }
 {WRONG_CHAR} {
-    ERROR_A();
+    ERROR_TYPEA();
     return CHAR;
 }
 "." {
