@@ -6,7 +6,7 @@
     #include "ast.h"
     #include "syntax.tab.h"
     int yycolumn = 1;
-    extern int error_num;
+    int error_num;
     
     void yyerror(const char*s);
     
@@ -16,6 +16,8 @@
         yylloc.last_line = yylineno; \
         yylloc.last_column = yycolumn + yyleng; \
         yycolumn += yyleng;
+    #define ERROR_A() printf("Error type A at Line %d: unknown lexeme %s\n", yylineno, yytext); error_num++;
+    #define ERROR_B(lineno, msg) printf("Error type B at Line %d: %s\n", lineno, msg); error_num++;    
 %}
 
 %option yylineno
@@ -81,8 +83,7 @@ WRONG_CHAR      ('.+')
     return ID;
 }
 {WRONG_ID} {
-    printf("Error type A at Line %d: unknown lexeme %s\n", yylineno, yytext); 
-    error_num++;
+    ERROR_A();
     return ID;
 }
 {CHAR} {
@@ -92,8 +93,7 @@ WRONG_CHAR      ('.+')
     return CHAR;
 }
 {WRONG_CHAR} {
-    printf("Error type A at Line %d: unknown lexeme %s\n", yylineno, yytext); 
-    error_num++;
+    ERROR_A();
     return CHAR;
 }
 "." {
@@ -205,8 +205,7 @@ WRONG_CHAR      ('.+')
 }
 [ \t] {}
 . {
-    printf("Error type A at Line %d: unknown lexeme %s\n", yylineno, yytext); 
-    error_num++;
+    ERROR_A();
     return LEXEME_ERROR;
 }
 
