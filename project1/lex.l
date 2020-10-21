@@ -15,7 +15,7 @@
         yylloc.first_column = yycolumn; \
         yylloc.last_line = yylineno; \
         yylloc.last_column = yycolumn + yyleng; \
-        yycolno += yyleng;
+        yycolumn += yyleng;
     #define ERROR_TYPEA() 
         printf("Error type A at Line %d: unknown lexeme %s\n", yylineno, yytext); 
         error_num++;
