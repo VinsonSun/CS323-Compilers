@@ -33,10 +33,19 @@ CHAR            ('{LETTER}')|('\\[xX][0-9a-fA-F]{1,2}')
 WRONG_CHAR      ('.+')
 %%
 
-
-{INT} {
-    int val = atoi(yytext);
-    yylval.node = newASTNode(yylineno, "INT", INT, &val, 0);
+{DECINT} {
+    int intVal = atoi(yytext);
+    char *strVal = malloc(10);
+    sprintf(strVal, "%d", intVal);
+    yylval.node = newASTNode(yylineno, "INT", INT, strVal, 0);
+    return INT;
+}
+{HEXINT} {
+    int intVal = 0;
+    sscanf(yytext, "%x", &intVal);
+    char *strVal = malloc(10);
+    sprintf(strVal, "%d", intVal);
+    yylval.node = newASTNode(yylineno, "INT", INT, strVal, 0);
     return INT;
 }
 {FLOAT} {
