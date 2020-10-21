@@ -51,7 +51,7 @@ Program :
 
 ExtDefList : 
         ExtDef ExtDefList{ $$ = newASTNode(@1.first_line, "ExtDefList", 0, NULL, 2, $1, $2);}
-    |   { $$ = NULL; }
+    |   %empty { $$ = NULL; }
     ;
 
 ExtDef : 
@@ -67,13 +67,13 @@ ExtDecList :
 
 /* Specifiers */
 Specifier : 
-        TYPE{ $$ = newASTNode(@1.first_line, "Specifier", 0, NULL, 1, $1); }
+        TYPE { $$ = newASTNode(@1.first_line, "Specifier", 0, NULL, 1, $1); }
     |   StructSpecifier{ $$ = newASTNode(@1.first_line, "Specifier", 0, NULL, 1, $1); }
     ;
 
 StructSpecifier : 
         STRUCT ID LC DefList RC{ $$ = newASTNode(@1.first_line, "StructSpecifier", 0, NULL, 5, $1, $2, $3, $4, $5); }
-    |   STRUCT ID{ $$ = newASTNode(@1.first_line, "StructSpecifier", 0, NULL, 2, $1, $2); }
+    |   STRUCT ID { $$ = newASTNode(@1.first_line, "StructSpecifier", 0, NULL, 2, $1, $2); }
     ;
 
 /* Declarators */
@@ -91,23 +91,23 @@ FunDec :
 
 VarList : 
         ParamDec COMMA VarList{ $$ = newASTNode(@1.first_line, "VarList", 0, NULL, 3, $1, $2, $3); }
-    |   ParamDec{ $$ = newASTNode(@1.first_line, "VarList", 0, NULL, 1, $1); }
+    |   ParamDec { $$ = newASTNode(@1.first_line, "VarList", 0, NULL, 1, $1); }
     ;
 
 ParamDec : 
-        Specifier VarDec{ $$ = newASTNode(@1.first_line, "ParamDec", 0, NULL, 2, $1, $2); }
+        Specifier VarDec { $$ = newASTNode(@1.first_line, "ParamDec", 0, NULL, 2, $1, $2); }
     ;
     
     
 /* Statements */
 CompSt : 
-        LC DefList StmtList RC{ $$ = newASTNode(@1.first_line, "CompSt", 0, NULL, 4, $1, $2, $3, $4); }
-    |   LC DefList StmtList DefList error{ ERROR_B(@3.last_line, "Missing specifier"); }
+        LC DefList StmtList RC { $$ = newASTNode(@1.first_line, "CompSt", 0, NULL, 4, $1, $2, $3, $4); }
+    |   LC DefList StmtList DefList error { ERROR_B(@3.last_line, "Missing specifier"); }
     ;
 
 StmtList : 
         Stmt StmtList{ $$ = newASTNode(@1.first_line, "StmtList", 0, NULL, 2, $1, $2); }
-    |   {   $$ = NULL; }
+    |   %empty { $$ = newASTNode(yylineno, "StmtList", 0, NULL, 0); }
     ;
 
 Stmt : 
@@ -123,7 +123,7 @@ Stmt :
 /* Local Definitions */
 DefList : 
         Def DefList{ $$ = newASTNode(@1.first_line, "DefList", 0, NULL, 2, $1, $2); }
-    |   {$$ = NULL;}
+    |   %empty { $$ = newASTNode(yylineno, "DefList", 0, NULL, 0); }
     ;
 
 Def : 
@@ -157,7 +157,7 @@ Exp :
     |   Exp STAR Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
     |   Exp DIV Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
     |   LP Exp RP{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
-    |   MINUS Exp %prec UMINUS{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 2, $1, $2); }
+    |   MINUS Exp { $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 2, $1, $2); }
     |   NOT Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 2, $1, $2); }
     |   ID LP Args error { ERROR_B(@1.last_line, "Missing closing parenthesis ')'"); }
     |   ID LP Args RP{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 4, $1, $2, $3, $4); }
