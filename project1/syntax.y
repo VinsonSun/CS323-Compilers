@@ -59,7 +59,6 @@ ExtDef :
         Specifier ExtDecList SEMI{ $$ = newASTNode(@1.first_line, "ExtDef", 0, NULL, 3, $1, $2, $3); }
     |   Specifier SEMI{ $$ = newASTNode(@1.first_line, "ExtDef", 0, NULL, 2, $1, $2); }
     |   Specifier FunDec CompSt{ $$ = newASTNode(@1.first_line, "ExtDef", 0, NULL, 3, $1, $2, $3); }
-    |   Specifier FunDec SEMI{ $$ = newASTNode(@1.first_line, "ExtDef", 0, NULL, 3, $1, $2, $3);}
     ;
 
 ExtDecList : 
