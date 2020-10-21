@@ -35,12 +35,12 @@ WRONG_CHAR      ('.+')
 
 
 {DECINT} {
-    unsigned int val = atol(yytext);
+    int val = atoi(yytext);
     yylval.node = newASTNode(yylineno, "INT", INT, &val, 0);
     return INT;
 }
 {HEXINT} {
-    unsigned int val = 0;
+    int val = 0;
     sscanf(yytext, "%x", &val);
     yylval.node = newASTNode(yylineno, "INT", INT, &val, 0);
     return INT;
