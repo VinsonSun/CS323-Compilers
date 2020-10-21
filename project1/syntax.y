@@ -83,10 +83,11 @@ VarDec :
     ;
 
 FunDec : 
-        ID LP VarList error { ERROR_B(@1.last_line, "Missing closing parenthesis ')'"); }
-    |   ID LP VarList RP{ $$ = newASTNode(@1.first_line, "FunDec", 0, NULL, 4, $1, $2, $3, $4); }
+        ID LP VarList RP{ $$ = newASTNode(@1.first_line, "FunDec", 0, NULL, 4, $1, $2, $3, $4); }
+    |   ID LP RP{ $$ = newASTNode(@1.first_line, "FunDec", 0, NULL, 3, $1, $2, $3); }         
+    |   ID LP VarList error { ERROR_B(@1.last_line, "Missing closing parenthesis ')'"); } 
     |   ID LP error { ERROR_B(@1.last_line, "Missing closing parenthesis ')'"); }   
-    |   ID LP RP{ $$ = newASTNode(@1.first_line, "FunDec", 0, NULL, 3, $1, $2, $3); } 
+
     ;
 
 VarList : 
@@ -113,11 +114,11 @@ StmtList :
 Stmt : 
         Exp SEMI{ $$ = newASTNode(@1.first_line, "Stmt", 0, NULL, 2, $1, $2); }
     |   CompSt{ $$ = newASTNode(@1.first_line, "Stmt", 0, NULL, 1, $1); }
-    |   RETURN Exp error { ERROR_B(@1.last_line, "Missing semicolon ';'"); }
-    |   RETURN Exp SEMI{ $$ = newASTNode(@1.first_line, "Stmt", 0, NULL, 3, $1, $2, $3); }
+    |   RETURN Exp SEMI{ $$ = newASTNode(@1.first_line, "Stmt", 0, NULL, 3, $1, $2, $3); }    
     |   IF LP Exp RP Stmt{ $$ = newASTNode(@1.first_line, "Stmt", 0, NULL, 5, $1, $2, $3, $4, $5); }
-    |   IF LP Exp RP Stmt ELSE Stmt{ $$ = newASTNode(@1.first_line, "Stmt", 0, NULL, 7, $1, $2, $3, $4, $5, $6, $7); }
-    |   WHILE LP Exp RP Stmt{ $$ = newASTNode(@1.first_line, "Stmt", 0, NULL, 5, $1, $2, $3, $4, $5); }
+    |   IF LP Exp RP Stmt ELSE Stmt{ $$ = newASTNode(@1.first_line, "Stmt", 0, NULL, 7, $1, $2, $3, $4, $5, $6, $7); }  
+    |   WHILE LP Exp RP Stmt{ $$ = newASTNode(@1.first_line, "Stmt", 0, NULL, 5, $1, $2, $3, $4, $5); }    
+    |   RETURN Exp error { ERROR_B(@1.last_line, "Missing semicolon ';'"); }
     ;
 
 /* Local Definitions */
@@ -127,8 +128,8 @@ DefList :
     ;
 
 Def : 
-        Specifier DecList error { ERROR_B(@1.last_line, "Missing semicolon ';'"); }
-    |   Specifier DecList SEMI{ $$ = newASTNode(@1.first_line, "Def", 0, NULL, 3, $1, $2, $3);}
+        Specifier DecList SEMI{ $$ = newASTNode(@1.first_line, "Def", 0, NULL, 3, $1, $2, $3);}
+    |   Specifier DecList error { ERROR_B(@1.last_line, "Missing semicolon ';'"); }
     ;
 
 DecList : 
