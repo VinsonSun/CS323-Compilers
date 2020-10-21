@@ -62,6 +62,7 @@ ExtDef :
 
 ExtDecList : 
         VarDec{ $$ = newASTNode(@1.first_line, "ExtDecList", 0, NULL, 1, $1);}
+    |   VarDec COMMA ExtDecList{ $$ = newASTNode(@1.first_line, "ExtDecList", 0, NULL, 3, $1, $2, $3); }
     ;
 
 /* Specifiers */
