@@ -17,7 +17,7 @@
 %token <node> INT FLOAT CHAR
 %token <node> ID TYPE
 %token <node> DOT SEMI COMMA
-%token <node> ASSIGN LE LT GE GT NE EQ PLUS MINUS STAR DIV AND OR NOT
+%token <node> ASSIGN LE LT GE GT NE EQ PLUS MINUS MUL DIV AND OR NOT
 %token <node> LP RP LB RB LC RC
 %token <node> STRUCT RETURN IF ELSE WHILE
 
@@ -146,15 +146,15 @@ Exp :
         Exp ASSIGN Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
     |   Exp AND Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
     |   Exp OR Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
-    |   Exp GE Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }   
     |   Exp LT Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
+    |   Exp LE Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }  
     |   Exp GT Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
-    |   Exp LE Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }   
+    |   Exp GE Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); } 
+    |   Exp NE Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }    
     |   Exp EQ Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
-    |   Exp NE Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
     |   Exp PLUS Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
     |   Exp MINUS Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
-    |   Exp STAR Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
+    |   Exp MUL Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
     |   Exp DIV Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
     |   LP Exp RP{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
     |   MINUS Exp { $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 2, $1, $2); }
