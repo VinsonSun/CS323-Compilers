@@ -32,7 +32,7 @@ FLOAT           -?(0|[1-9][0-9]*){\.[0-9]+}
 ID              [a-zA-Z_][0-9a-zA-Z_]*
 WRONG_ID        [0-9][0-9a-zA-Z_]*
 LETTER          [a-zA-Z_]
-CHAR            ('{[a-zA-Z_]}')|('\\[xX][0-9a-fA-F]{1,2}')
+CHAR            ('{[LETTER]}')|('\\[xX][0-9a-fA-F]{1,2}')
 WRONG_CHAR      ('.+')
 %%
 
