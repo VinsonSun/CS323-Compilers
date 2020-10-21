@@ -157,7 +157,7 @@ WRONG_CHAR      ('.+')
     return MINUS;
 }
 "*" {
-    yylval.node = newASTNode(yylineno, "MUL", STAR, NULL, 0);
+    yylval.node = newASTNode(yylineno, "MUL", MUL, NULL, 0);
     return MUL;
 }
 "/" {
