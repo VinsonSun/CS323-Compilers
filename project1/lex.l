@@ -28,7 +28,8 @@
 DECINT          ^0|(-?[1-9][0-9]*)$
 HEXINT          (0[xX]0|0[xX][1-9a-fA-F][1-9a-fA-F]{0,7})
 INT             {DECINT}|{HEXINT}
-FLOAT           -?(0|[1-9][0-9]*){\.[0-9]+}
+FRAC            \.[0-9]+
+FLOAT           -?(0|[1-9][0-9]*){FRAC}
 ID              [a-zA-Z_][0-9a-zA-Z_]*
 WRONG_ID        [0-9][0-9a-zA-Z_]*
 LETTER          [a-zA-Z_]
