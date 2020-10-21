@@ -3,7 +3,7 @@
     #include <stdio.h>
     #include "ast.h"
     extern int error_num;
-    void yyerror(const char*);
+    void yyerror(int, const char*);
 %}
 
 %error-verbose
