@@ -16,9 +16,6 @@
         yylloc.last_line = yylineno; \
         yylloc.last_column = yycolumn + yyleng; \
         yycolumn += yyleng;
-    #define ERROR_TYPEA() 
-        printf("Error type A at Line %d: unknown lexeme %s\n", yylineno, yytext); 
-        error_num++;
 %}
 
 %option yylineno
@@ -84,7 +81,8 @@ WRONG_CHAR      ('.+')
     return ID;
 }
 {WRONG_ID} {
-    ERROR_TYPEA();
+    printf("Error type A at Line %d: unknown lexeme %s\n", yylineno, yytext); 
+    error_num++;
     return ID;
 }
 {CHAR} {
@@ -94,7 +92,8 @@ WRONG_CHAR      ('.+')
     return CHAR;
 }
 {WRONG_CHAR} {
-    ERROR_TYPEA();
+    printf("Error type A at Line %d: unknown lexeme %s\n", yylineno, yytext); 
+    error_num++;
     return CHAR;
 }
 "." {
@@ -206,7 +205,8 @@ WRONG_CHAR      ('.+')
 }
 [ \t] {}
 . {
-    ERROR_TYPEA();
+    printf("Error type A at Line %d: unknown lexeme %s\n", yylineno, yytext); 
+    error_num++;
     return LEXEME_ERROR;
 }
 
