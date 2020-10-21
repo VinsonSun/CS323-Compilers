@@ -7,21 +7,33 @@
     #include "syntax.tab.h"
     int yycolumn = 1;
     extern int error_num;
+    
+    void yyerror(const char*s);
+    
     #define YY_USER_ACTION \
-        yylloc.first_line = yylloc.last_line = yylineno; \
-        yylloc.first_column = yycolumn; \
-        yylloc.last_column = yycolumn + yyleng - 1; \
-        yycolumn += yyleng;
-
+        yylloc.first_line = yylineno; \
+        yylloc.first_column = yycolno; \
+        yylloc.last_line = yylineno; \
+        yylloc.last_column = yycolno + yyleng; \
+        yycolno += yyleng;
+    #define ERROR_TYPEA() 
+        printf("Error type A at Line %d: unknown lexeme %s\n", yylineno, yytext); 
+        error_num++;
+    #define ERROR_TYPEB(lineno, msg)
+        printf("Error type B at Line %d: %s\n", lineo, msg);
+        error_num++;
 %}
 
-digit [0-9]
-hex_head "0x"|"0X"
-hex_char [0-9a-fA-F]
-not_hex_char [g-zG-Z]
-letter [_a-zA-Z]
 %option yylineno
-
+DECINT          ^0|(-?[1-9][0-9]*)$
+HEXINT          (0[xX]0|0[xX][1-9a-fA-F][1-9a-fA-F]{0,7})
+INT             {DECINT}|{HEXINT}
+FLOAT           -?(0|[1-9][0-9]*){\.[0-9]+}
+ID              [a-zA-Z_][0-9a-zA-Z_]*
+WRONG_ID        [0-9][0-9a-zA-Z_]*
+LETTER          [a-zA-Z_]
+CHAR            ('{[a-zA-Z_]}')|('\\[xX][0-9a-fA-F]{1,2}')
+WRONG_CHAR      ('.+')
 %%
 
 "struct" {
@@ -78,26 +90,30 @@ letter [_a-zA-Z]
     yylval.node = newASTNode(yylineno, "INT", INT, &val, 0);
     return INT;
 }
-{letter}({digit}|{letter})* {
+{ID} {
     char *s = malloc(strlen(yytext) + 1);
     strcpy(s, yytext);
     yylval.node = newASTNode(yylineno, "ID", ID, s, 0);
     return ID;
 }
-\'{letter}\' {
+{WRONG_ID} {
+    ERROR_A();
+    return ID;
+}
+{CHAR} {
     char *s = malloc(strlen(yytext) + 1);
     strcpy(s, yytext);
     yylval.node = newASTNode(yylineno, "CHAR", CHAR, s, 0);
     return CHAR;
 }
-"//"[^\n]* {}
-"/*" {
-    char a = input(), b = input();
-    while(a != '*' || b != '/'){
-        a = b;
-        b = input();
-    }
- }
+{WRONG_CHAR} {
+    ERROR_A();
+    return CHAR;
+}
+"." {
+    yylval.node = newASTNode(yylineno, "DOT", DOT, NULL, 0);
+    return DOT;
+}
 ";" {
     yylval.node = newASTNode(yylineno, "SEMI", SEMI, NULL, 0);
     return SEMI;
@@ -146,8 +162,7 @@ letter [_a-zA-Z]
     yylval.node = newASTNode(yylineno, "NE", NE, s, 0);
     return NE;
 }
-
-\+ {
+"+" {
     yylval.node = newASTNode(yylineno, "PLUS", PLUS, NULL, 0);
     return PLUS;
 }
@@ -155,11 +170,11 @@ letter [_a-zA-Z]
     yylval.node = newASTNode(yylineno, "MINUS", MINUS, NULL, 0);
     return MINUS;
 }
-\* {
+"*" {
     yylval.node = newASTNode(yylineno, "STAR", STAR, NULL, 0);
     return STAR;
 }
-\/ {
+"/" {
     yylval.node = newASTNode(yylineno, "DIV", DIV, NULL, 0);
     return DIV;
 }
@@ -171,43 +186,41 @@ letter [_a-zA-Z]
     yylval.node = newASTNode(yylineno, "OR", OR, NULL, 0);
     return OR;
 }
-\. {
-    yylval.node = newASTNode(yylineno, "DOT", DOT, NULL, 0);
-    return DOT;
-}
 "!" {
     yylval.node = newASTNode(yylineno, "NOT", NOT, NULL, 0);
     return NOT;
 }
-\( {
+"(" {
     yylval.node = newASTNode(yylineno, "LP", LP, NULL, 0);
     return LP;
 }
-\) {
+")" {
     yylval.node = newASTNode(yylineno, "RP", RP, NULL, 0);
     return RP;
 }
-\[ {
+"[" {
     yylval.node = newASTNode(yylineno, "LB", LB, NULL, 0);
     return LB;
 }
-\] {
+"]" {
     yylval.node = newASTNode(yylineno, "RB", RB, NULL, 0);
     return RB;
 }
-\{ {
+"{" {
     yylval.node = newASTNode(yylineno, "LC", LC, NULL, 0);
     return LC;
 }
-\} {
+"}" {
     yylval.node = newASTNode(yylineno, "RC", RC, NULL, 0);
     return RC;
 }
-\n {yycolumn = 1;}
-[" "|\r|\t] {}
+[\n\r] {
+    yycolumn = 1;
+}
+[ \t] {}
 . {
-    error_num++;
-    printf("Error type A at line %d: Mysterious characters '%s'.\n", yylineno, yytext);
+    ERROR_A();
+    return LEXEME_ERROR;
 }
 
 %%
