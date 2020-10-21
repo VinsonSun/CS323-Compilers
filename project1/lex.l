@@ -21,26 +21,26 @@
 %}
 
 %option yylineno
-DECINT          ^0|(-?[1-9][0-9]*)$
-HEXINT          (0[xX]0|0[xX][1-9a-fA-F][1-9a-fA-F]{0,7})
-INT             {DECINT}|{HEXINT}
-FRAC            \.[0-9]+
-FLOAT           -?(0|[1-9][0-9]*){FRAC}
-ID              [a-zA-Z_][0-9a-zA-Z_]*
-WRONG_ID        [0-9][0-9a-zA-Z_]*
-LETTER          [a-zA-Z_]
-CHAR            ('{LETTER}')|('\\[xX][0-9a-fA-F]{1,2}')
-WRONG_CHAR      ('.+')
+decInt          ^0|(-?[1-9][0-9]*)$
+hexInt          (0[xX]0|0[xX][1-9a-fA-F][1-9a-fA-F]{0,7})
+int             {decInt}|{hexInt}
+frac            \.[0-9]+
+float           -?(0|[1-9][0-9]*){frac}
+id              [a-zA-Z_][0-9a-zA-Z_]*
+wrong_id        [0-9][0-9a-zA-Z_]*
+letter          [a-zA-Z_]
+char            ('{letter}')|('\\[xX][0-9a-fA-F]{1,2}')
+wrong_char      ('.+')
 %%
 
-{DECINT} {
+{decInt} {
     int intVal = atoi(yytext);
     char *strVal = malloc(10);
     sprintf(strVal, "%d", intVal);
     yylval.node = newASTNode(yylineno, "INT", INT, strVal, 0);
     return INT;
 }
-{HEXINT} {
+{hexInt} {
     int intVal = 0;
     sscanf(yytext, "%x", &intVal);
     char *strVal = malloc(10);
@@ -48,7 +48,7 @@ WRONG_CHAR      ('.+')
     yylval.node = newASTNode(yylineno, "INT", INT, strVal, 0);
     return INT;
 }
-{FLOAT} {
+{float} {
     float val = strtof(yytext, NULL);
     yylval.node = newASTNode(yylineno, "FLOAT", FLOAT, &val, 0);
     return FLOAT;
@@ -79,23 +79,23 @@ WRONG_CHAR      ('.+')
     yylval.node = newASTNode(yylineno, "WHILE", WHILE, NULL, 0);
     return WHILE;
 }
-{ID} {
+{id} {
     char *s = malloc(strlen(yytext) + 1);
     strcpy(s, yytext);
     yylval.node = newASTNode(yylineno, "ID", ID, s, 0);
     return ID;
 }
-{WRONG_ID} {
+{wrong_id} {
     ERROR_A();
     return ID;
 }
-{CHAR} {
+{char} {
     char *s = malloc(strlen(yytext) + 1);
     strcpy(s, yytext);
     yylval.node = newASTNode(yylineno, "CHAR", CHAR, s, 0);
     return CHAR;
 }
-{WRONG_CHAR} {
+{wrong_char} {
     ERROR_A();
     return CHAR;
 }
