@@ -36,6 +36,29 @@ CHAR            ('{LETTER}')|('\\[xX][0-9a-fA-F]{1,2}')
 WRONG_CHAR      ('.+')
 %%
 
+
+{DECINT} {
+    unsigned int val = atol(yytext);
+    yylval.node = newASTNode(yylineno, "INT", INT, &val, 0);
+    return INT;
+}
+{HEXINT} {
+    unsigned int val = 0;
+    sscanf(yytext, "%x", &val);
+    yylval.node = newASTNode(yylineno, "INT", INT, &val, 0);
+    return INT;
+}
+{FLOAT} {
+    float val = strtof(yytext, NULL);
+    yylval.node = newASTNode(yylineno, "FLOAT", FLOAT, &val, 0);
+    return FLOAT;
+}
+"int"|"float"|"char" {
+    char *s = malloc(strlen(yytext) + 1);
+    strcpy(s, yytext);
+    yylval.node = newASTNode(yylineno, "TYPE", TYPE, s, 0);
+    return TYPE;
+}
 "struct" {
     yylval.node = newASTNode(yylineno, "STRUCT", STRUCT, NULL, 0);
     return STRUCT;
@@ -55,40 +78,6 @@ WRONG_CHAR      ('.+')
 "while" {
     yylval.node = newASTNode(yylineno, "WHILE", WHILE, NULL, 0);
     return WHILE;
-}
-"int"|"float"|"char" {
-    char *s = malloc(strlen(yytext) + 1);
-    strcpy(s, yytext);
-    yylval.node = newASTNode(yylineno, "TYPE", TYPE, s, 0);
-    return TYPE;
-}
-0|[1-9]{digit}* {
-    unsigned int val = atol(yytext);
-    yylval.node = newASTNode(yylineno, "INT", INT, &val, 0);
-    return INT;
-}
-{digit}*\.{digit}*[eE][\+\-]?{digit}+ {
-    float val = strtof(yytext, NULL);
-    yylval.node = newASTNode(yylineno, "FLOAT", FLOAT, &val, 0);
-    return FLOAT;
-}
-{digit}+\.{digit}+ {
-    float val = strtof(yytext, NULL);
-    yylval.node = newASTNode(yylineno, "FLOAT", FLOAT, &val, 0);
-    return FLOAT;
-}
-{hex_head}[0-9a-zA-Z]*{not_hex_char}+[0-9a-zA-Z]* {
-    printf("Error type A at Line %d: Illegal hexadecimal number '%s'.\n", yylineno, yytext);
-    error_num++;
-    int val = 0;
-    yylval.node = newASTNode(yylineno, "INT", INT, &val, 0);
-    return INT;
-}
-{hex_head}{hex_char}+ {
-    unsigned int val = 0;
-    sscanf(yytext, "%x", &val);
-    yylval.node = newASTNode(yylineno, "INT", INT, &val, 0);
-    return INT;
 }
 {ID} {
     char *s = malloc(strlen(yytext) + 1);
