@@ -86,9 +86,9 @@ VarDec :
     ;
 
 FunDec : 
-        ID LP VarList error { ERROR_TYPEB(@1.last_line, "Missing closing parenthesis ')'"); }
+        ID LP VarList error { yyerror(@1.last_line, "Missing closing parenthesis ')'"); }
     |   ID LP VarList RP{ $$ = newASTNode(@1.first_line, "FunDec", 0, NULL, 4, $1, $2, $3, $4); }
-    |   ID LP error { ERROR_TYPEB(@1.last_line, "Missing closing parenthesis ')'"); }   
+    |   ID LP error { yyerror(@1.last_line, "Missing closing parenthesis ')'"); }   
     |   ID LP RP{ $$ = newASTNode(@1.first_line, "FunDec", 0, NULL, 3, $1, $2, $3); } 
     ;
 
@@ -105,7 +105,7 @@ ParamDec :
 /* Statements */
 CompSt : 
         LC DefList StmtList RC{ $$ = newASTNode(@1.first_line, "CompSt", 0, NULL, 4, $1, $2, $3, $4); }
-    |   LC DefList StmtList DefList error{ ERROR_TYPEB(@3.last_line, "Missing specifier"); }
+    |   LC DefList StmtList DefList error{ yyerror(@3.last_line, "Missing specifier"); }
     ;
 
 StmtList : 
@@ -116,7 +116,7 @@ StmtList :
 Stmt : 
         Exp SEMI{ $$ = newASTNode(@1.first_line, "Stmt", 0, NULL, 2, $1, $2); }
     |   CompSt{ $$ = newASTNode(@1.first_line, "Stmt", 0, NULL, 1, $1); }
-    |   RETURN Exp error { ERROR_TYPEB(@1.last_line, "Missing semicolon ';'"); }
+    |   RETURN Exp error { yyerror(@1.last_line, "Missing semicolon ';'"); }
     |   RETURN Exp SEMI{ $$ = newASTNode(@1.first_line, "Stmt", 0, NULL, 3, $1, $2, $3); }
     |   IF LP Exp RP Stmt{ $$ = newASTNode(@1.first_line, "Stmt", 0, NULL, 5, $1, $2, $3, $4, $5); }
     |   IF LP Exp RP Stmt ELSE Stmt{ $$ = newASTNode(@1.first_line, "Stmt", 0, NULL, 7, $1, $2, $3, $4, $5, $6, $7); }
@@ -162,7 +162,7 @@ Exp :
     |   LP Exp RP{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
     |   MINUS Exp %prec UMINUS{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 2, $1, $2); }
     |   NOT Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 2, $1, $2); }
-    |   ID LP Args error { ERROR_TYPEB(@1.last_line, "Missing closing parenthesis ')'"); }
+    |   ID LP Args error { yyerror(@1.last_line, "Missing closing parenthesis ')'"); }
     |   ID LP Args RP{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 4, $1, $2, $3, $4); }
     |   ID LP RP{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
     |   Exp LB Exp RB{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 4, $1, $2, $3, $4); }
