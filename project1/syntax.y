@@ -35,7 +35,7 @@
 %left LE LT GE GT NE EQ
 %left PLUS MINUS
 %left STAR DIV
-%right NOT UMINUS
+%right NOT UMINUS NEG
 %left LP RP LB RB DOT
 
 %%
@@ -158,7 +158,7 @@ Exp :
     |   Exp MUL Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
     |   Exp DIV Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
     |   LP Exp RP{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
-    |   MINUS Exp { $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 2, $1, $2); }
+    |   MINUS Exp %prec NEG { $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 2, $1, $2); }
     |   NOT Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 2, $1, $2); }
     |   ID LP Args RP{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 4, $1, $2, $3, $4); }
     |   ID LP RP{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
