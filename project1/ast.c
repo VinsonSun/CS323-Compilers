@@ -49,7 +49,7 @@ void traverse(ASTNode *node, int spaceNum){
     }else if(node->type == INT){
         printf("%s: %u\n", node->name, node->val.intVal);
     }else if(node->type == FLOAT){
-        printf("%s: %f\n", node->name, node->val.floatVal);
+        printf("%s: %g\n", node->name, node->val.floatVal);
     }else if(node->type == CHAR || node->type == ID || node->type == TYPE){
         printf("%s: %s\n", node->name, node->val.stringVal);
     }else{
