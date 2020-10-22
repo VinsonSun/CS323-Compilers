@@ -44,8 +44,7 @@ wrong_char      ('.+')
     return INT;
 }
 {wrong_hexInt} {
-    printf("Error type A at Line %d: Illegal hexadecimal number '%s'.\n", yylineno, yytext);
-    error_num++;
+    ERROR_A();
     int val = 0;
     yylval.node = newASTNode(yylineno, "INT", INT, &val, 0);
     return INT;
