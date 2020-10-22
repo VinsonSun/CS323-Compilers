@@ -123,7 +123,7 @@ Stmt :
 
 /* Local Definitions */
 DefList : 
-        Def DefList{ $$ = newASTNode(@1.first_line, "DefList", 0, NULL, 0); }
+        Def DefList{ $$ = newASTNode(@1.first_line, "DefList", 0, NULL, 2, $1, $2); }
     |   %empty { $$ = NULL; }
     ;
 
