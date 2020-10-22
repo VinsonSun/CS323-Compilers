@@ -108,7 +108,7 @@ CompSt :
 
 StmtList : 
         Stmt StmtList{ $$ = newASTNode(@1.first_line, "StmtList", 0, NULL, 2, $1, $2); }
-    |   %empty { $$ = newASTNode(yylineno, "StmtList", 0, NULL, 0); }
+    |   %empty { $$ = NULL; }
     ;
 
 Stmt : 
