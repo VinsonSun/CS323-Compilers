@@ -6,7 +6,7 @@
     #include "ast.h"
     #include "syntax.tab.h"
     int yycolumn = 1;
-    int error_num;
+    int error_num = 0;
     
     void yyerror(const char*s);
     
@@ -21,11 +21,10 @@
 %}
 
 %option yylineno
-decInt          ^0|(-?[1-9][0-9]*)$
-hexInt          (0[xX]0|0[xX][1-9a-fA-F][1-9a-fA-F]{0,7})
-int             {decInt}|{hexInt}
-frac            \.[0-9]+
-float           -?(0|[1-9][0-9]*){frac}
+decInt          [1-9][0-9]*
+hexInt          0|0[xX][1-9a-fA-F][0-9a-fA-F]*|0[xX][0]
+wrong_hexInt    0[xX][0-9a-zA-Z]*
+float           -?[0-9]+\.[0-9]+
 id              [a-zA-Z_][0-9a-zA-Z_]*
 wrong_id        [0-9][0-9a-zA-Z_]*
 letter          [a-zA-Z_]
@@ -34,18 +33,21 @@ wrong_char      ('.+')
 %%
 
 {decInt} {
-    int intVal = atoi(yytext);
-    char *strVal = malloc(10);
-    sprintf(strVal, "%d", intVal);
-    yylval.node = newASTNode(yylineno, "INT", INT, strVal, 0);
+    int val = atol(yytext);
+    yylval.node = newASTNode(yylineno, "INT", INT, &val, 0);
     return INT;
 }
 {hexInt} {
-    int intVal = 0;
-    sscanf(yytext, "%x", &intVal);
-    char *strVal = malloc(10);
-    sprintf(strVal, "%d", intVal);
-    yylval.node = newASTNode(yylineno, "INT", INT, strVal, 0);
+    int val = 0;
+    sscanf(yytext, "%x", &val);
+    yylval.node = newASTNode(yylineno, "INT", INT, &val, 0);
+    return INT;
+}
+{wrong_hexInt} {
+    printf("Error type A at Line %d: Illegal hexadecimal number '%s'.\n", yylineno, yytext);
+    error_num++;
+    int val = 0;
+    yylval.node = newASTNode(yylineno, "INT", INT, &val, 0);
     return INT;
 }
 {float} {
