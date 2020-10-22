@@ -170,8 +170,9 @@ Exp :
     |   CHAR{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 1, $1); }
     |   Exp LEXEME_ERROR Exp {}
     |   LEXEME_ERROR {}
+    |   LP Exp error { ERROR_B(@1.last_line, "Missing closing parenthesis ')'"); }
     |   ID LP Args error { ERROR_B(@1.last_line, "Missing closing parenthesis ')'"); }
-    
+    |   ID LP error { ERROR_B(@1.last_line, "Missing closing parenthesis ')'"); }
     ;
 
 Args : 
