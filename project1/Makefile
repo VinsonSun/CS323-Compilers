@@ -1,4 +1,4 @@
-splc:
+splc:   clean 
 	@mkdir bin
 	@touch bin/splc
 	@chmod +x bin/splc
