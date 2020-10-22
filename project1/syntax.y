@@ -160,7 +160,6 @@ Exp :
     |   LP Exp RP{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
     |   MINUS Exp { $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 2, $1, $2); }
     |   NOT Exp{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 2, $1, $2); }
-    |   ID LP Args error { ERROR_B(@1.last_line, "Missing closing parenthesis ')'"); }
     |   ID LP Args RP{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 4, $1, $2, $3, $4); }
     |   ID LP RP{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 3, $1, $2, $3); }
     |   Exp LB Exp RB{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 4, $1, $2, $3, $4); }
@@ -171,6 +170,8 @@ Exp :
     |   CHAR{ $$ = newASTNode(@1.first_line, "Exp", 0, NULL, 1, $1); }
     |   Exp LEXEME_ERROR Exp {}
     |   LEXEME_ERROR {}
+    |   ID LP Args error { ERROR_B(@1.last_line, "Missing closing parenthesis ')'"); }
+    
     ;
 
 Args : 
