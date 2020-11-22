@@ -72,6 +72,6 @@ typedef struct ASTNode ASTNode;
 void semantic_func();
 Var_hash_node* get_var_hash_node(char *key);
 Func_hash_node* get_func_hash_node(char *key);
-Type *get_exp_type(Node *node);
+Type *get_exp_type(ASTNode *node);
 
 #endif
