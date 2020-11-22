@@ -269,7 +269,7 @@ static Type* get_id_type(ASTNode  *Vardec, Type *basic_type){
     while(Vardec->childNum == 4){
         Type *new_type = malloc(sizeof(Type));
         new_type->kind = ARRAY;
-        new_type->u.array.size = Vardec->child[2]->val.i;
+        new_type->u.array.size = Vardec->child[2]->val.intVal;
         new_type->u.array.elem = ans;
         ans = new_type;
         Vardec = Vardec->child[0];
