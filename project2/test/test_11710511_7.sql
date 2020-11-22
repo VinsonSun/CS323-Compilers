@@ -1,8 +1,9 @@
 struct Node{
-   int v;
-}
-
-int test7() {
-   struct Node node;
-   int val = node + 1;
+    int v;
+};
+int test7()
+{
+  struct Node node;
+  int a = node + 1;
+  return a;
 }
