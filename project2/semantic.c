@@ -207,7 +207,7 @@ void insert_to_val_table(char *name, int line, Type *type){
     }
 }
 
-int paralist_equal(Type_ASTNode *para1, Type_ASTNode *para2){
+int paralist_equal(Type_node *para1, Type_node *para2){
     while(para1 != NULL && para2 != NULL){
         if(!type_equal(para1->type, para2->type))
             return 0;
@@ -288,7 +288,7 @@ Type* get_field_type(FieldList *field, char *id){
     return NULL;
 }
 
-int equal_args_type(Type_ASTNode *para_list, ASTNode  *args){
+int equal_args_type(Type_node *para_list, ASTNode  *args){
     node_type_check(args, "Args");
     while(args != NULL && para_list != NULL){
         if(!type_equal(para_list->type, get_exp_type(args->child[0])))
@@ -325,7 +325,7 @@ Type* handle_Func_exp(ASTNode  *node){
         else if(node->childNum == 4){
             if(!equal_args_type(func->para_type_list, node->child[2])){
                 int expect = 0;
-                struct _Type_ASTNode *b = func->para_type_list;
+                struct _Type_node *b = func->para_type_list;
                 while(b!=NULL){
                     b=b->next;
                     expect++;
@@ -588,7 +588,7 @@ Type_node* handle_ParamDec(ASTNode  *node){
 Type_node* handle_VarList(ASTNode  *node){
     node_type_check(node, "VarList");
     ASTNode  *cur_node = node;
-    Type_ASTNode *type_node = handle_ParamDec(node->child[0]);
+    Type_node *type_node = handle_ParamDec(node->child[0]);
     if(node->childNum > 1){
         type_node->next = handle_VarList(node->child[2]);
     }
@@ -599,7 +599,7 @@ void handle_FunDec(ASTNode  *node, Type *return_type, int defined){
     node_type_check(node, "FunDec");
     char *name = node->child[0]->val.stringVal;
     int line = node->child[0]->line;
-    Type_ASTNode *para_list = NULL;
+    Type_node *para_list = NULL;
     if(node->childNum == 4){
         para_list = handle_VarList(node->child[2]);
     }
