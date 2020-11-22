@@ -142,7 +142,7 @@ int type_equal(Type *type1, Type *type2){
             return type1->u.basic == type2->u.basic;
         }
         else if(type1->kind == ARRAY){
-            return type_equal(type1->u.array.elem, type2->u.array.elem);
+            return type_equal(type1->u.array.ele, type2->u.array.ele);
         }
         else if(type1->kind == STRUCTURE){
             FieldList *tmpa = type1->u.structure;
@@ -264,7 +264,7 @@ static Type* get_id_type(ASTNode  *Vardec, Type *basic_type){
         Type *new_type = malloc(sizeof(Type));
         new_type->kind = ARRAY;
         new_type->u.array.size = Vardec->child[2]->val.intVal;
-        new_type->u.array.elem = ans;
+        new_type->u.array.ele = ans;
         ans = new_type;
         Vardec = Vardec->child[0];
     }
@@ -473,7 +473,7 @@ Type* get_exp_type(ASTNode* node){
                 print_error(12, node->line, "Exp");
                 return NULL;
             }
-            return type->u.array.elem;
+            return type->u.array.ele;
         }
     }
 }
