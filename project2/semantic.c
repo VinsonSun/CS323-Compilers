@@ -34,8 +34,8 @@ unsigned int hash_func(char *name){
 
 Var_hash_node* get_var_hash_node(char *key){
     int id = hash_func(key);
-    Var_hash_ASTNode *tmp = var_hash_table[id];
-    Var_hash_ASTNode *ans = NULL;
+    Var_hash_node *tmp = var_hash_table[id];
+    Var_hash_node *ans = NULL;
     while(tmp != NULL){
         if(strcmp(key, tmp->name) == 0){
             ans = tmp;
@@ -47,7 +47,7 @@ Var_hash_node* get_var_hash_node(char *key){
 
 Func_hash_node* get_func_hash_node(char *key){
     int id = hash_func(key);
-    Func_hash_ASTNode *tmp = func_hash_table[id];
+    Func_hash_node *tmp = func_hash_table[id];
     while(tmp != NULL){
         if(strcmp(key, tmp->name) == 0){
             return tmp;
@@ -168,7 +168,7 @@ int type_equal(Type *a, Type *b){
 
 
 void insert_to_val_table(char *name, int line, Type *type){
-    Var_hash_ASTNode *existed_node = get_var_hash_node(name);
+    Var_hash_node *existed_node = get_var_hash_node(name);
     if(existed_node != NULL){
         if(type->kind == STRUCTURE){
             semantic_error(15, line, name);
@@ -186,7 +186,7 @@ void insert_to_val_table(char *name, int line, Type *type){
         }
     }
     unsigned int i = hash_func(name);
-    Var_hash_ASTNode *node = malloc(sizeof(Var_hash_node));
+    Var_hash_node *node = malloc(sizeof(Var_hash_node));
     node->name = malloc(strlen(name) + 1);
     strcpy(node->name, name);
     node->next = node->last = NULL;
@@ -198,7 +198,7 @@ void insert_to_val_table(char *name, int line, Type *type){
         var_hash_table[i] = node;
     }
     else{
-        Var_hash_ASTNode *tmp = var_hash_table[i];
+        Var_hash_node *tmp = var_hash_table[i];
         while(tmp->next != NULL){
             tmp = tmp->next;
         }
@@ -222,7 +222,7 @@ int paralist_equal(Type_ASTNode *para1, Type_ASTNode *para2){
 }
 
 
-int func_equal(Func_hash_ASTNode *func1, Func_hash_ASTNode *func2){
+int func_equal(Func_hash_node *func1, Func_hash_node *func2){
     if(type_equal(func1->return_type, func2->return_type)){
         if(paralist_equal(func1->para_type_list, func2->para_type_list))
             return 1;
@@ -232,7 +232,7 @@ int func_equal(Func_hash_ASTNode *func1, Func_hash_ASTNode *func2){
 
 void insert_to_func_table(char *name, int line, Type *return_type, Type_node* para_type_list, int defined){
     unsigned int i = hash_func(name);
-    Func_hash_ASTNode *node = malloc(sizeof(Func_hash_node));
+    Func_hash_node *node = malloc(sizeof(Func_hash_node));
     node->name = malloc(strlen(name) + 1);
     strcpy(node->name, name);
     node->next = node->last = NULL;
@@ -245,7 +245,7 @@ void insert_to_func_table(char *name, int line, Type *return_type, Type_node* pa
         func_hash_table[i] = node;
     }
     else{
-        Func_hash_ASTNode *tmp = func_hash_table[i];
+        Func_hash_node *tmp = func_hash_table[i];
         while(tmp->next != NULL){
             tmp = tmp->next;
         }
@@ -307,7 +307,7 @@ Type* handle_Func_exp(ASTNode  *node){
     node_type_check(node, "Exp");
     node_type_check(node->child[1], "LP");
     char *name = node->child[0]->val.stringValtringVal;
-    Func_hash_ASTNode *func = get_func_hash_node(name);
+    Func_hash_node *func = get_func_hash_node(name);
     if(func == NULL){
         if(get_var_hash_node(name) != NULL)
             semantic_error(11, node->line, name);
@@ -350,7 +350,7 @@ Type* get_exp_type(ASTNode* node){
     node_type_check(node, "Exp");
     if(node->childNum == 1){
         if(node->child[0]->type == ID){
-            Var_hash_ASTNode *tmp = get_var_hash_node(node->child[0]->val.stringValtringVal);
+            Var_hash_node *tmp = get_var_hash_node(node->child[0]->val.stringValtringVal);
             if(tmp == NULL){
                 semantic_error(1, node->line, node->child[0]->val.stringValtringVal);
                 return NULL;
@@ -548,7 +548,7 @@ Type* handle_StructSpecifier(ASTNode  *node){
     }
     else if(node->childNum == 2){
         char *name = node->child[1]->val.stringVal;
-        Var_hash_ASTNode *hash_node = get_var_hash_node(name);
+        Var_hash_node *hash_node = get_var_hash_node(name);
         type = hash_node->type;
     }
     return type;
@@ -603,7 +603,7 @@ void handle_FunDec(ASTNode  *node, Type *return_type, int defined){
     if(node->childNum == 4){
         para_list = handle_VarList(node->child[2]);
     }
-    Func_hash_ASTNode *old_func = get_func_hash_node(name);
+    Func_hash_node *old_func = get_func_hash_node(name);
     if(old_func == NULL)
         insert_to_func_table(name, line, return_type, para_list, defined);
     else{
