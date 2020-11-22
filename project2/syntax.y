@@ -2,6 +2,7 @@
     #include "lex.yy.c"
     #include <stdio.h>
     #include "ast.h"
+    #include "semantic.h"
     void yyerror(const char*);
 %}
 
