@@ -1,28 +1,23 @@
-#ifndef PROJECT2_SEMANTIC_H
-#define PROJECT2_SEMANTIC_H
+#ifndef SEMANTIC_H
+#define SEMANTIC_H
 #define HASH_TABLE_SIZE 0x3fff
 
-typedef struct _Type Type;
-typedef struct _FieldList FieldList;
-typedef struct _Var_hash_node Var_hash_node;
-typedef struct _Func_hash_node Func_hash_node;
-typedef struct _Type_node Type_node;
-typedef struct _Var_list_node Var_list_node;
+typedef struct Type Type;
+typedef struct FieldList FieldList;
+typedef struct Var_hash_node Var_hash_node;
+typedef struct Func_hash_node Func_hash_node;
+typedef struct Type_node Type_node;
+typedef struct Var_list_node Var_list_node;
 
 Var_hash_node *var_hash_table[HASH_TABLE_SIZE + 1];
 Func_hash_node *func_hash_table[HASH_TABLE_SIZE + 1];
 
-struct _FieldList{
-    char* name;
-    Type* type;
-    FieldList *next;
-};
 
 enum{
     INT_TYPE, FLOAT_TYPE, CHAR_TYPE
 };
 
-struct _Type{
+struct Type{
     enum{BASIC, ARRAY, STRUCTURE} kind;
     union{
         int basic;
@@ -34,7 +29,13 @@ struct _Type{
     }u;
 };
 
-struct _Var_hash_node
+struct FieldList{
+    char* name;
+    Type* type;
+    FieldList *next;
+};
+
+struct Var_hash_node
 {
     char *name;
     int line;
@@ -45,13 +46,13 @@ struct _Var_hash_node
     Var_hash_node *last;
 };
 
-struct _Type_node{
+struct Type_node{
     Type *type;
     Type_node *next;
     char *name;
 };
 
-struct _Func_hash_node{
+struct Func_hash_node{
     char *name;
     int line;
     int whether_dec;
@@ -62,7 +63,7 @@ struct _Func_hash_node{
     Type_node* para_type_list;
 };
 
-struct _Var_list_node{
+struct Var_list_node{
     Var_hash_node *node;
     Var_list_node *next;
 };
