@@ -6,7 +6,7 @@ typedef struct ASTNode
 {
     int line;
     int type;
-    int visited;
+    int status;
     char *name;
     int childNum;
     struct ASTNode *child[MAX_CHILD];
