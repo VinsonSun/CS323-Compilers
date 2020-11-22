@@ -6,7 +6,6 @@
 #include <string.h>
 #include <stdio.h>
 
-
 Type* handle_VarDec(ASTNode *node, Type *basic_type);
 Type* handle_StructSpecifier(ASTNode *node);
 Type* handle_Specifier(ASTNode *node);
@@ -51,15 +50,14 @@ Func_hash_node* get_func_hash_node(char *key){
     while(tmp != NULL){
         if(strcmp(key, tmp->name) == 0){
             return tmp;
-        }
-        else{
+        } else {
             tmp = tmp->next;
         }
     }
     return NULL;
 }
 
-void semantic_error(int error_type, int line, char *name){
+void print_error(int error_type, int line, char *name){
     char msg[100] = "\0";
     if(error_type == 1)
         sprintf(msg, "undefined variable: %s", name);
@@ -171,14 +169,14 @@ void insert_to_val_table(char *name, int line, Type *type){
     Var_hash_node *existed_node = get_var_hash_node(name);
     if(existed_node != NULL){
         if(type->kind == STRUCTURE){
-            semantic_error(15, line, name);
+            print_error(15, line, name);
             return;
         } else if(existed_node->type->kind == STRUCTURE){
-            semantic_error(3, line, name);
+            print_error(3, line, name);
         } else {
             //in the same scope
             if(existed_node->depth == cur_depth){
-                semantic_error(3, line, name);
+                print_error(3, line, name);
                 return;
             }
         }
@@ -308,14 +306,14 @@ Type* handle_Func_exp(ASTNode  *node){
     Func_hash_node *func = get_func_hash_node(name);
     if(func == NULL){
         if(get_var_hash_node(name) != NULL)
-            semantic_error(11, node->line, name);
-        else semantic_error(2, node->line, name);
+            print_error(11, node->line, name);
+        else print_error(2, node->line, name);
         return NULL;
     }
     else{
         if(node->childNum == 3){
             if(func->para_type_list != NULL){
-                semantic_error(9, node->line, name);
+                print_error(9, node->line, name);
                 return NULL;
             }
             else return func->return_type;
@@ -335,7 +333,7 @@ Type* handle_Func_exp(ASTNode  *node){
                 }else{
                     sprintf(error_msg, "invalid argument type for %s", name);
                 }
-                semantic_error(9, node->line, error_msg);
+                print_error(9, node->line, error_msg);
                 return NULL;
             }
             else return func->return_type;
@@ -350,7 +348,7 @@ Type* get_exp_type(ASTNode* node){
         if(node->child[0]->type == ID){
             Var_hash_node *tmp = get_var_hash_node(node->child[0]->val.stringVal);
             if(tmp == NULL){
-                semantic_error(1, node->line, node->child[0]->val.stringVal);
+                print_error(1, node->line, node->child[0]->val.stringVal);
                 return NULL;
             }
             return tmp->type;
@@ -377,7 +375,7 @@ Type* get_exp_type(ASTNode* node){
                     else return type1;
                 }
                 else{
-                    semantic_error(7, node->line, NULL);
+                    print_error(7, node->line, NULL);
                     return NULL;
                 }
             }
@@ -385,7 +383,7 @@ Type* get_exp_type(ASTNode* node){
                 if(type1 == NULL || type2 == NULL)//error has occurred before
                     return NULL;
                 if(type1->u.basic != INT_TYPE || type2->u.basic != INT_TYPE){
-                    semantic_error(7, node->line, NULL);
+                    print_error(7, node->line, NULL);
                     return NULL;
                 }
                 else{
@@ -397,7 +395,7 @@ Type* get_exp_type(ASTNode* node){
                     return new_type(INT_TYPE);
                 }
                 else{
-                    semantic_error(7, node->line, NULL);
+                    print_error(7, node->line, NULL);
                     return NULL;
                 }
             }
@@ -411,12 +409,12 @@ Type* get_exp_type(ASTNode* node){
                         return type1;
                     }
                     else{
-                        semantic_error(5, node->line, NULL);
+                        print_error(5, node->line, NULL);
                         return NULL;
                     }
                 }
                 else{
-                    semantic_error(6, node->line, NULL);
+                    print_error(6, node->line, NULL);
                     return NULL;
                 }
             }
@@ -429,13 +427,13 @@ Type* get_exp_type(ASTNode* node){
             //Exp DOT ID TODO
             Type *type = get_exp_type(node->child[0]);
             if(type == NULL || type->kind != STRUCTURE){
-                semantic_error(13, node->line, NULL);
+                print_error(13, node->line, NULL);
             }
             else{
                 char *id = node->child[2]->val.stringVal;
                 Type *field_type = get_field_type(type->u.structure, id);
                 if(field_type == NULL){
-                    semantic_error(14, node->line, id);
+                    print_error(14, node->line, id);
                 }
                 return field_type;
             }
@@ -454,7 +452,7 @@ Type* get_exp_type(ASTNode* node){
             if(type == NULL)//error has occurred before
                 return NULL;
             if(type->u.basic != INT_TYPE){
-                semantic_error(7, node->line, NULL);
+                print_error(7, node->line, NULL);
                 return NULL;
             }
             else{
@@ -470,11 +468,11 @@ Type* get_exp_type(ASTNode* node){
         else if(node->child[1]->type == LB){
             Type *type = get_exp_type(node->child[0]);
             if(type == NULL || type->kind != ARRAY){
-                semantic_error(10, node->line, "Exp");
+                print_error(10, node->line, "Exp");
                 return NULL;
             }
             else if(!type_equal(get_exp_type(node->child[2]), my_int_type)){
-                semantic_error(12, node->line, "Exp");
+                print_error(12, node->line, "Exp");
                 return NULL;
             }
             return type->u.array.elem;
@@ -611,13 +609,13 @@ void handle_FunDec(ASTNode  *node, Type *return_type, int defined){
             }
             else{
                 if(defined == 1){//redefine function
-                    semantic_error(4, node->line, name);
+                    print_error(4, node->line, name);
                 }
             }
         }
         else{
             if(defined == 1 && old_func->whether_def == 1)
-                semantic_error(4, node->line, name);
+                print_error(4, node->line, name);
         }
     }
 }
@@ -670,7 +668,7 @@ void handle_Def(ASTNode *node){
         else if(Dec_node->childNum == 3){
             Type *type = handle_VarDec(Vardec_node, basic_type);
             if(!type_equal(type, get_exp_type(Dec_node->child[2]))){
-                semantic_error(5, Dec_node->line, NULL);
+                print_error(5, Dec_node->line, NULL);
             }
 
         }
@@ -711,7 +709,7 @@ void handle_Stmt(ASTNode *node, Type *correct_type){
     if(node->child[1] != NULL && node->child[1]->type == LP){
         //IF/WHILE LP EXP RP
         if(!type_equal(my_int_type, get_exp_type(node->child[2])))
-            semantic_error(7, node->line, NULL);
+            print_error(7, node->line, NULL);
         handle_Stmt(node->child[4], correct_type);
         if(node->childNum == 7){
             handle_Stmt(node->child[6], correct_type);
@@ -719,7 +717,7 @@ void handle_Stmt(ASTNode *node, Type *correct_type){
     }
     else if(node->child[0]->type == RETURN){
         if(!type_equal(correct_type, get_exp_type(node->child[1])))
-            semantic_error(8, node->line, NULL);
+            print_error(8, node->line, NULL);
     }
     else if(strcmp(node->child[0]->name, "CompSt") == 0){
         handle_CompSt(node->child[0], correct_type, 0);
