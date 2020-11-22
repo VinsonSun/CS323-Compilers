@@ -195,7 +195,8 @@ int main(int argc, char **argv) {
         yyrestart(f);
         yyparse();
         if(error_num==0)
-            traverse(root, 0);
+            // traverse(root, 0);
+            semantic_func();
     }
     return 0;
 }
