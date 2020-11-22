@@ -1,8 +1,10 @@
-struct Node {
-   int v;
-}
-
-int test8() {
-   struct Node node;
-   return node;
+struct Apple{
+    int price;
+};
+int test_11710204_8()
+{
+  int a = 2;
+  struct Apple apple;
+  apple.price = a;
+  return apple;
 }
