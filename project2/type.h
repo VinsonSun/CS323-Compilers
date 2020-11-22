@@ -1,6 +1,16 @@
 #ifndef TYPE_H
 #define TYPE_H
 
+typedef struct Type Type;
+typedef struct FieldList FieldList;
+typedef struct Var_hash_node Var_hash_node;
+typedef struct Func_hash_node Func_hash_node;
+typedef struct Type_node Type_node;
+typedef struct Var_list_node Var_list_node;
+
+Var_hash_node *var_hash_table[HASH_TABLE_SIZE + 1];
+Func_hash_node *func_hash_table[HASH_TABLE_SIZE + 1];
+
 enum{
     INT_TYPE, FLOAT_TYPE, CHAR_TYPE
 };
