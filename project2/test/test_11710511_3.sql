@@ -1,4 +1,5 @@
 int test3() {
    int x = 1.0;
-   return x;
+   float y = 1.1;
+   return y;
 }
