@@ -1,0 +1,2 @@
+Error type 1 at Line 2: undefined variable: x
+Error type 6 at Line 2: left side in assignment is rvalue
