@@ -306,7 +306,7 @@ int equal_args_type(Type_node *para_list, ASTNode  *args){
 Type* handle_Func_exp(ASTNode  *node){
     node_type_check(node, "Exp");
     node_type_check(node->child[1], "LP");
-    char *name = node->child[0]->val.stringValtringVal;
+    char *name = node->child[0]->val.stringVal;
     Func_hash_node *func = get_func_hash_node(name);
     if(func == NULL){
         if(get_var_hash_node(name) != NULL)
@@ -350,9 +350,9 @@ Type* get_exp_type(ASTNode* node){
     node_type_check(node, "Exp");
     if(node->childNum == 1){
         if(node->child[0]->type == ID){
-            Var_hash_node *tmp = get_var_hash_node(node->child[0]->val.stringValtringVal);
+            Var_hash_node *tmp = get_var_hash_node(node->child[0]->val.stringVal);
             if(tmp == NULL){
-                semantic_error(1, node->line, node->child[0]->val.stringValtringVal);
+                semantic_error(1, node->line, node->child[0]->val.stringVal);
                 return NULL;
             }
             return tmp->type;
@@ -434,7 +434,7 @@ Type* get_exp_type(ASTNode* node){
                 semantic_error(13, node->line, NULL);
             }
             else{
-                char *id = node->child[2]->val.stringValtringVal;
+                char *id = node->child[2]->val.stringVal;
                 Type *field_type = get_field_type(type->u.structure, id);
                 if(field_type == NULL){
                     semantic_error(14, node->line, id);
@@ -488,7 +488,7 @@ Type* handle_VarDec(ASTNode  *node, Type *basic_type){
     node_type_check(node, "VarDec");
     ASTNode  *ID_node = get_id_node(node);
     Type *ID_type = get_id_type(node, basic_type);
-    insert_to_val_table(ID_node->val.stringValtringVal, ID_node->line, ID_type);
+    insert_to_val_table(ID_node->val.stringVal, ID_node->line, ID_type);
     return ID_type;
 }
 
@@ -497,7 +497,7 @@ FieldList* handle_struct_VarDec(ASTNode  *node, Type *basic_type){
     ASTNode  *ID_node = get_id_node(node);
     Type *ID_type = get_id_type(node, basic_type);
     FieldList *field = malloc(sizeof(FieldList));
-    field->name = ID_node->val.stringValtringVal;
+    field->name = ID_node->val.stringVal;
     field->type = ID_type;
     field->next = NULL;
     return field;
