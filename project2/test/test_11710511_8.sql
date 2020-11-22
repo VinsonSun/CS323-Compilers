@@ -1,5 +1,9 @@
+struct Node {
+   int v = 0;
+}
+
 int test8() {
-   int c = 1;
-   c = '1';
-   return c;
+   char c = 1;
+   struct X x;
+   return x;
 }
