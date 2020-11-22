@@ -5,5 +5,5 @@ int test8()
 {
   int a = 2;
   struct Node node;
-  return apple;
+  return node;
 }
