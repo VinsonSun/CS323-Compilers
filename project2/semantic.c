@@ -7,17 +7,17 @@
 #include <stdio.h>
 
 
-Type* handle_VarDec(ASTASTNode *node, Type *basic_type);
-Type* handle_StructSpecifier(ASTASTNode *node);
-Type* handle_Specifier(ASTASTNode *node);
-Type_node* handle_ParamDec(ASTASTNode *node);
-Type_node* handle_VarList(ASTASTNode *node);
-void handle_FunDec(ASTASTNode *node, Type *return_type, int defined);
-void handle_ExtDef(ASTASTNode *node);
-void handle_Def(ASTASTNode *node);
-Type *get_exp_type(ASTASTNode *node);
-void handle_Stmt(ASTASTNode *node, Type *correct_type);
-void handle_CompSt(ASTASTNode *node, Type *correct_type, int func_flag);
+Type* handle_VarDec(ASTNode  *node, Type *basic_type);
+Type* handle_StructSpecifier(ASTNode  *node);
+Type* handle_Specifier(ASTNode  *node);
+Type_node* handle_ParamDec(ASTNode  *node);
+Type_node* handle_VarList(ASTNode  *node);
+void handle_FunDec(ASTNode  *node, Type *return_type, int defined);
+void handle_ExtDef(ASTNode  *node);
+void handle_Def(ASTNode  *node);
+Type *get_exp_type(ASTNode  *node);
+void handle_Stmt(ASTNode  *node, Type *correct_type);
+void handle_CompSt(ASTNode  *node, Type *correct_type, int func_flag);
 int cur_depth = 0;
 
 unsigned int hash_func(char *name){
@@ -101,7 +101,7 @@ void table_init(){
     }
 }
 
-static void node_type_check(ASTASTNode *node, char *correct_name){
+static void node_type_check(ASTNode  *node, char *correct_name){
     if(node == NULL)
         printf("Error: %s NULL node\n", correct_name);
     node->visited = 1;
@@ -254,16 +254,16 @@ void insert_to_func_table(char *name, int line, Type *return_type, Type_node* pa
     }
 }
 
-ASTNode* get_id_node(ASTASTNode *Vardec){
+ASTNode* get_id_node(ASTNode  *Vardec){
     node_type_check(Vardec, "VarDec");
-    ASTASTNode *tmp = Vardec;
+    ASTNode  *tmp = Vardec;
     while(tmp->type != ID){
         tmp = tmp->child[0];
     }
     return tmp;
 }
 
-static Type* get_id_type(ASTASTNode *Vardec, Type *basic_type){
+static Type* get_id_type(ASTNode  *Vardec, Type *basic_type){
     node_type_check(Vardec, "VarDec");
     Type *ans = basic_type;
     while(Vardec->childNum == 4){
@@ -288,7 +288,7 @@ Type* get_field_type(FieldList *field, char *id){
     return NULL;
 }
 
-int equal_args_type(Type_ASTNode *para_list, ASTASTNode *args){
+int equal_args_type(Type_ASTNode *para_list, ASTNode  *args){
     node_type_check(args, "Args");
     while(args != NULL && para_list != NULL){
         if(!type_equal(para_list->type, get_exp_type(args->child[0])))
@@ -303,7 +303,7 @@ int equal_args_type(Type_ASTNode *para_list, ASTASTNode *args){
     else return 1;
 }
 
-Type* handle_Func_exp(ASTASTNode *node){
+Type* handle_Func_exp(ASTNode  *node){
     node_type_check(node, "Exp");
     node_type_check(node->child[1], "LP");
     char *name = node->child[0]->val.stringValtringVal;
@@ -404,7 +404,7 @@ Type* get_exp_type(ASTNode* node){
                 }
             }
             else if(oper == ASSIGN){
-                ASTASTNode *exp = node->child[0];
+                ASTNode  *exp = node->child[0];
                 if(exp->childNum == 1 && exp->child[0]->type == ID
                    || exp->childNum == 3 && exp->child[1]->type == DOT
                    || exp->childNum == 4 && exp->child[1]->type == LB){
@@ -484,17 +484,17 @@ Type* get_exp_type(ASTNode* node){
     }
 }
 
-Type* handle_VarDec(ASTASTNode *node, Type *basic_type){
+Type* handle_VarDec(ASTNode  *node, Type *basic_type){
     node_type_check(node, "VarDec");
-    ASTASTNode *ID_node = get_id_node(node);
+    ASTNode  *ID_node = get_id_node(node);
     Type *ID_type = get_id_type(node, basic_type);
     insert_to_val_table(ID_node->val.stringValtringVal, ID_node->line, ID_type);
     return ID_type;
 }
 
-FieldList* handle_struct_VarDec(ASTASTNode *node, Type *basic_type){
+FieldList* handle_struct_VarDec(ASTNode  *node, Type *basic_type){
     node_type_check(node, "VarDec");
-    ASTASTNode *ID_node = get_id_node(node);
+    ASTNode  *ID_node = get_id_node(node);
     Type *ID_type = get_id_type(node, basic_type);
     FieldList *field = malloc(sizeof(FieldList));
     field->name = ID_node->val.stringValtringVal;
@@ -503,24 +503,24 @@ FieldList* handle_struct_VarDec(ASTASTNode *node, Type *basic_type){
     return field;
 }
 
-Type* handle_StructSpecifier(ASTASTNode *node){
+Type* handle_StructSpecifier(ASTNode  *node){
     node_type_check(node, "StructSpecifier");
     Type *type = malloc(sizeof(Type));
     type->kind = STRUCTURE;
     type->u.structure = NULL;
     FieldList *last_node = type->u.structure;
     if(node->childNum == 5){
-        ASTASTNode *DefList = node->child[3];
+        ASTNode  *DefList = node->child[3];
         while(DefList != NULL && DefList->childNum == 2){
             DefList->visited = 1;
-            ASTASTNode *Def = DefList->child[0];
+            ASTNode  *Def = DefList->child[0];
             //handle type
             Type *basic_type = handle_Specifier(Def->child[0]);
             //handle variable
-            ASTASTNode *Declist_node = Def->child[1];
+            ASTNode  *Declist_node = Def->child[1];
             while(1){
-                ASTASTNode *Dec_node = Declist_node->child[0];
-                ASTASTNode *Vardec_node = Dec_node->child[0];
+                ASTNode  *Dec_node = Declist_node->child[0];
+                ASTNode  *Vardec_node = Dec_node->child[0];
                 if(Dec_node->childNum == 1){
                     FieldList* field = handle_struct_VarDec(Vardec_node, basic_type);
 
@@ -542,7 +542,7 @@ Type* handle_StructSpecifier(ASTASTNode *node){
             DefList = DefList->child[1];
         }
         if(node->child[1] != NULL){
-            ASTASTNode *id_node = node->child[1];
+            ASTNode  *id_node = node->child[1];
             insert_to_val_table(id_node->val.stringVal, id_node->line, type);
         }
     }
@@ -554,10 +554,10 @@ Type* handle_StructSpecifier(ASTASTNode *node){
     return type;
 }
 
-Type* handle_Specifier(ASTASTNode *node){
+Type* handle_Specifier(ASTNode  *node){
     node_type_check(node, "Specifier");
     Type *type;
-    ASTASTNode *type_node = node->child[0];
+    ASTNode  *type_node = node->child[0];
     if(type_node->type == TYPE){
         if(strcmp(type_node->val.stringVal, "int") == 0){
             type = new_type(INT_TYPE);
@@ -573,21 +573,21 @@ Type* handle_Specifier(ASTASTNode *node){
     return type;
 }
 
-Type_node* handle_ParamDec(ASTASTNode *node){
+Type_node* handle_ParamDec(ASTNode  *node){
     node_type_check(node, "ParamDec");
     Type *type = handle_Specifier(node->child[0]);
     type = handle_VarDec(node->child[1], type);
     Type_node* type_node = malloc(sizeof(Type_node));
-    ASTASTNode *ID = get_id_node(node->child[1]);
+    ASTNode  *ID = get_id_node(node->child[1]);
     type_node->type = type;
     type_node->next = NULL;
     type_node->name = ID->val.stringVal;
     return type_node;
 }
 
-Type_node* handle_VarList(ASTASTNode *node){
+Type_node* handle_VarList(ASTNode  *node){
     node_type_check(node, "VarList");
-    ASTASTNode *cur_node = node;
+    ASTNode  *cur_node = node;
     Type_ASTNode *type_node = handle_ParamDec(node->child[0]);
     if(node->childNum > 1){
         type_node->next = handle_VarList(node->child[2]);
@@ -595,7 +595,7 @@ Type_node* handle_VarList(ASTASTNode *node){
     return type_node;
 }
 
-void handle_FunDec(ASTASTNode *node, Type *return_type, int defined){
+void handle_FunDec(ASTNode  *node, Type *return_type, int defined){
     node_type_check(node, "FunDec");
     char *name = node->child[0]->val.stringVal;
     int line = node->child[0]->line;
@@ -624,7 +624,7 @@ void handle_FunDec(ASTASTNode *node, Type *return_type, int defined){
     }
 }
 
-void handle_ExtDef(ASTASTNode *node){//node shoule be a ExtDef
+void handle_ExtDef(ASTNode  *node){//node shoule be a ExtDef
     node_type_check(node, "ExtDef");
     //handle type
     Type *basic_type = handle_Specifier(node->child[0]);
