@@ -104,7 +104,7 @@ void table_init(){
 static void node_type_check(ASTNode  *node, char *correct_name){
     if(node == NULL)
         printf("Error: %s NULL node\n", correct_name);
-    node->visited = 1;
+    node->status = 1;
     if(strcmp(node->name, correct_name) != 0){
         printf("It is a '%s' Node, not a '%s' Node\n",node->name, correct_name);
     }
@@ -512,7 +512,7 @@ Type* handle_StructSpecifier(ASTNode  *node){
     if(node->childNum == 5){
         ASTNode  *DefList = node->child[3];
         while(DefList != NULL && DefList->childNum == 2){
-            DefList->visited = 1;
+            DefList->status = 1;
             ASTNode  *Def = DefList->child[0];
             //handle type
             Type *basic_type = handle_Specifier(Def->child[0]);
@@ -689,7 +689,7 @@ void handle_DefList(ASTNode *node){
     node_type_check(node, "DefList");
     ASTNode *DefList = node;
     while(DefList != NULL && DefList->childNum == 2){
-        DefList->visited = 1;
+        DefList->status = 1;
         handle_Def(DefList->child[0]);
         DefList = DefList->child[1];
     }
@@ -738,7 +738,7 @@ void add_var(ASTNode *node){
     if(strcmp(node->name, "ExtDef") == 0){
         handle_ExtDef(node);
     }
-    else if(strcmp(node->name, "DefList") == 0 && node->visited == 0){
+    else if(strcmp(node->name, "DefList") == 0 && node->status == 0){
         handle_DefList(node);
     }
     else if(strcmp(node->name, "Exp") == 0){
@@ -747,7 +747,7 @@ void add_var(ASTNode *node){
 }
 
 static void tree_search(ASTNode *node){
-    if(node == NULL || node->visited == 1) return;
+    if(node == NULL || node->status == 1) return;
     add_var(node);
     for(int i = 0; i < node->childNum; i++){
         if(node->child[i] != NULL){
