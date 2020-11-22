@@ -27,7 +27,6 @@ unsigned int hash_func(char *name){
         if(i)
             val = (val ^ (i >> 12)) & HASH_TABLE_SIZE;
     }
-    //printf("%d\n", val);
     return val;
 }
 
@@ -118,8 +117,7 @@ Type* new_type(int basic){
             my_int_type->u.basic = INT_TYPE;
         }
         return my_int_type;
-    }
-    else if(basic == FLOAT_TYPE){
+    } else if(basic == FLOAT_TYPE){
         if(my_float_type == NULL){
             my_float_type = malloc(sizeof(Type));
             my_float_type->kind = BASIC;
@@ -131,24 +129,24 @@ Type* new_type(int basic){
     return NULL;
 }
 
-int type_equal(Type *a, Type *b){
-    if(a == NULL || b == NULL){
+int type_equal(Type *type1, Type *type2){
+    if(type1 == NULL || type2 == NULL){
         //error has been detected
         return 1;
     }
-    if(a->kind != b->kind){
+    if(type1->kind != type2->kind){
         return 0;
     }
     else{
-        if(a->kind == BASIC){
-            return a->u.basic == b->u.basic;
+        if(type1->kind == BASIC){
+            return type1->u.basic == type2->u.basic;
         }
-        else if(a->kind == ARRAY){
-            return type_equal(a->u.array.elem, b->u.array.elem);
+        else if(type1->kind == ARRAY){
+            return type_equal(type1->u.array.elem, type2->u.array.elem);
         }
-        else if(a->kind == STRUCTURE){
-            FieldList *tmpa = a->u.structure;
-            FieldList *tmpb = b->u.structure;
+        else if(type1->kind == STRUCTURE){
+            FieldList *tmpa = type1->u.structure;
+            FieldList *tmpb = type2->u.structure;
             while(tmpa != NULL && tmpb != NULL){
                 if(type_equal(tmpa->type, tmpb->type)){
                     tmpa = tmpa->next;
