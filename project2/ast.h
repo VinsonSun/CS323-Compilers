@@ -8,6 +8,7 @@ typedef struct ASTNode
     int type;
     char *name;
     int childNum;
+    int visited;
     struct ASTNode *child[MAX_CHILD];
     union Val{
         int intVal;
