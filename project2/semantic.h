@@ -67,7 +67,7 @@ struct _Var_list_node{
     Var_list_node *next;
 };
 
-typedef struct _Node Node;
+typedef struct ASTNode ASTNode;
 
 void semantic_func();
 Var_hash_node* get_var_hash_node(char *key);
