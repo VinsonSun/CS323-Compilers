@@ -4,6 +4,6 @@ struct Node {
 
 int test8() {
    char c = 1;
-   struct X x;
-   return x;
+   struct Node node;
+   return node;
 }
