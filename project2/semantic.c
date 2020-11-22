@@ -91,7 +91,7 @@ void print_error(int error_type, int line, char *name){
     printf("Error type %d at Line %d: %s\n", error_type, line, msg);
 }
 
-void table_init(){
+void table_generate(){
     for(int i = 0; i <= HASH_TABLE_SIZE; i++){
         var_hash_table[i] = NULL;
         func_hash_table[i] = NULL;
@@ -751,6 +751,6 @@ static void tree_search(ASTNode *node){
 }
 
 void semantic_func(){
-    table_init();
+    table_generate();
     tree_search(root);
 }
