@@ -1,7 +1,4 @@
-int test4() {
-   int a = 1;
-   int a = 2;
-}
-int test4() {
-
+int test5() {
+   int a = 1.1;
+   float b = 2;
 }

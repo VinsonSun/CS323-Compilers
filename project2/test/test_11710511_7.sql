@@ -1,9 +1,10 @@
-struct X {
-	int v = 0;
+struct Node {
+   int v;
 }
 
-int test1() {
-	struct X x;
-	int y = 1;
-	y = y + x;
+int test7() {
+   char c = '1';
+   int a = c + 1;
+   struct Node node;
+   int val = node + 1;
 }
