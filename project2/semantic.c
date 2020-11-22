@@ -7,17 +7,17 @@
 #include <stdio.h>
 
 
-Type* handle_VarDec(ASTNode  *node, Type *basic_type);
-Type* handle_StructSpecifier(ASTNode  *node);
-Type* handle_Specifier(ASTNode  *node);
-Type_node* handle_ParamDec(ASTNode  *node);
-Type_node* handle_VarList(ASTNode  *node);
-void handle_FunDec(ASTNode  *node, Type *return_type, int defined);
-void handle_ExtDef(ASTNode  *node);
-void handle_Def(ASTNode  *node);
-Type *get_exp_type(ASTNode  *node);
-void handle_Stmt(ASTNode  *node, Type *correct_type);
-void handle_CompSt(ASTNode  *node, Type *correct_type, int func_flag);
+Type* handle_VarDec(ASTNode *node, Type *basic_type);
+Type* handle_StructSpecifier(ASTNode *node);
+Type* handle_Specifier(ASTNode *node);
+Type_node* handle_ParamDec(ASTNode *node);
+Type_node* handle_VarList(ASTNode *node);
+void handle_FunDec(ASTNode *node, Type *return_type, int defined);
+void handle_ExtDef(ASTNode *node);
+void handle_Def(ASTNode *node);
+Type *get_exp_type(ASTNode *node);
+void handle_Stmt(ASTNode *node, Type *correct_type);
+void handle_CompSt(ASTNode *node, Type *correct_type, int func_flag);
 int cur_depth = 0;
 
 unsigned int hash_func(char *name){
@@ -173,11 +173,9 @@ void insert_to_val_table(char *name, int line, Type *type){
         if(type->kind == STRUCTURE){
             semantic_error(15, line, name);
             return;
-        }
-        else if(existed_node->type->kind == STRUCTURE){
+        } else if(existed_node->type->kind == STRUCTURE){
             semantic_error(3, line, name);
-        }
-        else {
+        } else {
             //in the same scope
             if(existed_node->depth == cur_depth){
                 semantic_error(3, line, name);
@@ -325,7 +323,7 @@ Type* handle_Func_exp(ASTNode  *node){
         else if(node->childNum == 4){
             if(!equal_args_type(func->para_type_list, node->child[2])){
                 int expect = 0;
-                struct _Type_node *b = func->para_type_list;
+                struct Type_node *b = func->para_type_list;
                 while(b!=NULL){
                     b=b->next;
                     expect++;
