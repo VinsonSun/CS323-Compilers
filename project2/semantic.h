@@ -37,7 +37,7 @@ struct _Type{
 struct _Var_hash_node
 {
     char *name;
-    int lineno;
+    int line;
     int depth;
     Type *type;
     struct _Operand *op;
@@ -53,7 +53,7 @@ struct _Type_node{
 
 struct _Func_hash_node{
     char *name;
-    int lineno;
+    int line;
     int whether_dec;
     int whether_def;
     Func_hash_node *next;
