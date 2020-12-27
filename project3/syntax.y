@@ -10,7 +10,7 @@
 %error-verbose
 %locations
 %union {
-    ASTNode* node;
+    struct ASTNode* node;
 }
 
 /* declared tokens */
