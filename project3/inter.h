@@ -23,7 +23,7 @@ int label_num;
 FILE* output;
 
 struct operand_t{
-    int kind;
+    int kind; 
     int temp_flag;
     union {
         int var_no;
