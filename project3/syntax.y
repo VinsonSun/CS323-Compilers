@@ -202,6 +202,7 @@ int main(int argc, char **argv) {
         yyparse();
         if(error_num==0)
             translate_program(root);
+            fclose(output)
     }
     return 0;
 }
