@@ -12,6 +12,7 @@ extern int yylineno;
 int error_num = 0;
 
 int main(int argc, char **argv) {
+    print(argc);
     if (argc > 1){
         FILE *f = fopen(argv[1], "r");
         if(argc==3)
