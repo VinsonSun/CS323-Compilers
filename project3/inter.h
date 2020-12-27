@@ -1,147 +1,83 @@
-#ifndef INTER_H
-#define INTER_H
-#include "node.h"
-#include "semantic.h"
+#ifndef INTERCODEH
+#define INTERCODEH 
 
-typedef struct _operand* pOperand;
-typedef struct _interCode* pInterCode;
-typedef struct _interCodes* pInterCodes;
-typedef struct _arg* pArg;
-typedef struct _argList* pArgList;
-typedef struct _interCodeList* pInterCodeList;
+#include<string.h>
+#include<stdlib.h>
+#include<assert.h>
+#include<stdio.h>
 
-typedef struct _operand {
-    enum {
-        OP_VARIABLE,
-        OP_CONSTANT,
-        OP_ADDRESS,
-        OP_LABEL,
-        OP_FUNCTION,
-        OP_RELOP,
-    } kind;
+enum {IR_VARIABLE, IR_CONSTANT, IR_ADDRESS, IR_POINTER};
 
+enum {IR_LABEL,IR_FUNCTION,IR_ASSIGN,IR_ADD,IR_SUB,IR_MUL,IR_DIV,
+    IR_GOTO,IR_IF,IR_RETURN,IR_DEC,IR_ARG,IR_CALL,IR_PARAM,IR_READ,IR_WRITE,IR_VOID};
+
+enum {IR_GT,IR_LT,IR_GE,IR_LE,IR_EQ,IR_NEQ};
+
+typedef struct operand_t operand;
+typedef struct intercode_t intercode;
+typedef struct intercode_list_t intercode_list;
+typedef struct intercodes_t intercodes;
+int temp_num;
+int label_num;
+
+FILE* output;
+
+struct operand_t{
+    int kind;
+    int temp_flag;
     union {
+        int var_no;
         int value;
-        char* name;
     } u;
+    int var_name;
+};
 
-    // boolean isAddr;
-} Operand;
+struct intercode_t {
+    int kind;
+    operand result, op1, op2;
+    char* func_name;
+    int label;
+    int relop;
+    int size;
+};
 
-typedef struct _interCode {
-    enum {
-        IR_LABEL,
-        IR_FUNCTION,
-        IR_ASSIGN,
-        IR_ADD,
-        IR_SUB,
-        IR_MUL,
-        IR_DIV,
-        IR_GET_ADDR,
-        IR_READ_ADDR,
-        IR_WRITE_ADDR,
-        IR_GOTO,
-        IR_IF_GOTO,
-        IR_RETURN,
-        IR_DEC,
-        IR_ARG,
-        IR_CALL,
-        IR_PARAM,
-        IR_READ,
-        IR_WRITE,
-    } kind;
+struct intercode_list_t {
+    intercode* code;
+    intercode_list* next;
+};
 
-    union {
-        struct {
-            pOperand op;
-        } oneOp;
-        struct {
-            pOperand right, left;
-        } assign;
-        struct {
-            pOperand result, op1, op2;
-        } binOp;
-        struct {
-            pOperand x, relop, y, z;
-        } ifGoto;
-        struct {
-            pOperand op;
-            int size;
-        } dec;
-    } u;
-} InterCode;
+struct intercodes_t {
+    intercode_list* head;
+    intercode_list* tail;
+};
 
-typedef struct _interCodes {
-    pInterCode code;
-    pInterCodes *prev, *next;
-} InterCodes;
+void intercode_init();
+intercode* intercode_new(int kind);
+void intercode_op_left(operand op);
+void intercode_op_right(operand op);
+void intercodes_add(intercodes* irs,intercode *ir);
+void intercodes_merge(intercodes* ir1,intercodes* ir2);
+void intercodes_print(intercodes* irs);
+void intercode_print(intercode* ir);
+void intercode_label(intercode* ir);
+void intercode_function(intercode* ir);
+void intercode_assign(intercode* ir);
+void intercode_add(intercode* ir);
+void intercode_sub(intercode* ir);
+void intercode_mul(intercode* ir);
+void intercode_div(intercode* ir);
+void intercode_goto(intercode* ir);
+void intercode_if(intercode* ir);
+void intercode_return(intercode* ir);
+void intercode_dec(intercode* ir);
+void intercode_arg(intercode* ir);
+void intercode_call(intercode* ir);
+void intercode_param(intercode* ir);
+void intercode_read(intercode* ir);
+void intercode_write(intercode* ir);
+int new_temp();
+int get_temp();
+void reset_temp();
+int new_label();
 
-typedef struct _arg {
-    pOperand op;
-    pArg next;
-} Arg;
-
-typedef struct _argList {
-    pArg head;
-    pArg cur;
-} ArgList;
-
-typedef struct _interCodeList {
-    pInterCodes head;
-    pInterCodes cur;
-    char* lastArrayName;  // 针对结构体数组，因为需要数组名查表
-    int tempVarNum;
-    int labelNum;
-} InterCodeList;
-
-extern boolean interError;
-extern pInterCodeList interCodeList;
-
-// Operand func
-pOperand newOperand(int kind, ...);
-void deleteOperand(pOperand p);
-void setOperand(pOperand p, int kind, void* val);
-void printOp(FILE* fp, pOperand op);
-
-// InterCode func
-pInterCode newInterCode(int kind, ...);
-void deleteInterCode(pInterCode p);
-void printInterCode(FILE* fp, pInterCodeList interCodeList);
-
-// InterCodes func
-pInterCodes newInterCodes(pInterCode code);
-void deleteInterCodes(pInterCodes p);
-
-// Arg and ArgList func
-pArg newArg(pOperand op);
-pArgList newArgList();
-void deleteArg(pArg p);
-void deleteArgList(pArgList p);
-void addArg(pArgList argList, pArg arg);
-
-// InterCodeList func
-pInterCodeList newInterCodeList();
-void deleteInterCodeList(pInterCodeList p);
-void addInterCode(pInterCodeList interCodeList, pInterCodes newCode);
-
-// traverse func
-pOperand newTemp();
-pOperand newLabel();
-int getSize(pType type);
-void genInterCodes(pNode node);
-void genInterCode(int kind, ...);
-void translateExp(pNode node, pOperand place);
-void translateArgs(pNode node, pArgList argList);
-void translateCond(pNode node, pOperand labelTrue, pOperand labelFalse);
-void translateVarDec(pNode node, pOperand place);
-void translateDec(pNode node);
-void translateDecList(pNode node);
-void translateDef(pNode node);
-void translateDefList(pNode node);
-void translateCompSt(pNode node);
-void translateStmt(pNode node);
-void translateStmtList(pNode node);
-void translateFunDec(pNode node);
-void translateExtDef(pNode node);
-void translateExtDefList(pNode node);
 #endif
