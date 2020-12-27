@@ -8,6 +8,7 @@ extern int yylex (void);
 extern void yyrestart (FILE *input_file);
 extern FILE* yyin;
 extern int yylineno;
+FILE* output;
 
 int error_num = 0;
 
