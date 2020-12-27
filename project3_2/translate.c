@@ -10,8 +10,7 @@ void translate_program(node* root){
     codes->tail = NULL;
     if (root->son[0]) {
         translate_extdeflist(root->son[0], codes);
-        //intercodes_print(codes);
-        mips_generate(codes);
+        intercodes_print(codes);
     }
 }
 void translate_extdeflist(node* root, intercodes* codes){
