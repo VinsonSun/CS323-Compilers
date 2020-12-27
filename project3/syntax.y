@@ -2,6 +2,8 @@
     #include "lex.yy.c"
     #include <stdio.h>
     #include "ast.h"
+    #include "intercode.h"
+    #include "translate.h"
     void yyerror(const char*);
 %}
 
@@ -195,7 +197,7 @@ int main(int argc, char **argv) {
         yyrestart(f);
         yyparse();
         if(error_num==0)
-            traverse(root, 0);
+            translate_program(root);
     }
     return 0;
 }
