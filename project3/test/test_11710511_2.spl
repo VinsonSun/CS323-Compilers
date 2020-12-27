@@ -1,0 +1,5 @@
+int fun() {
+    int a = 0xAbCdeF00:
+    return 1
+}
+
