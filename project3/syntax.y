@@ -2,7 +2,7 @@
     #include "lex.yy.c"
     #include <stdio.h>
     #include "ast.h"
-    #include "intercode.h"
+    #include "inter.h"
     #include "translate.h"
     void yyerror(const char*);
 %}
