@@ -29,7 +29,7 @@ void translate_extdef(ASTNode* root, intercodes* codes){
         intercodes *codes1 = malloc(sizeof(intercodes));
         codes1->head = NULL;
         codes1->tail = NULL;
-        symbol* func_entry=find_symbol(root->child[1]->child[0]->stringVal);
+        symbol* func_entry=find_symbol(root->child[1]->child[0]->val.stringVal);
         intercode* code1=intercode_new(IR_FUNCTION);
         code1->func_name=func_entry->name;
         //printf("%s\n",code1->func_name);
@@ -104,7 +104,7 @@ void translate_dec(ASTNode* root, intercodes* codes){
         operand* op=malloc(sizeof(operand));
         op->kind=IR_VARIABLE;
         op->temp_flag=0;
-        op->var_name=find_symbol(root->child[0]->child[0]->stringVal)->entry_name;
+        op->var_name=find_symbol(root->child[0]->child[0]->val.stringVal)->entry_name;
         intercodes* codes1=translate_exp(root->child[2],op);
         intercodes_merge(codes,codes1);
     }
@@ -114,7 +114,7 @@ void translate_dec(ASTNode* root, intercodes* codes){
 }
 void translate_vardec(ASTNode* root, intercodes* codes){
     if(root->childNum==1){
-        symbol* entry=find_symbol(root->child[0]->stringVal);
+        symbol* entry=find_symbol(root->child[0]->val.stringVal);
         if(entry->entry_name==-1){
             int size=entry->size;
             while(size>0){
@@ -143,7 +143,7 @@ intercodes* translate_exp(ASTNode* root,operand* op){
             if(!op){
                 return codes;
             }
-            int value=root->child[0]->intVal;
+            int value=root->child[0]->val.intVal;
             intercode* code=intercode_new(IR_ASSIGN);
             code->result.kind=op->kind;
             code->result.temp_flag=op->temp_flag;
@@ -159,7 +159,7 @@ intercodes* translate_exp(ASTNode* root,operand* op){
             if(!op){
                 return codes;
             }
-            char* name=root->child[0]->stringVal;
+            char* name=root->child[0]->val.stringVal;
             symbol* entry=find_symbol(name);
             intercode* code=intercode_new(IR_ASSIGN);
             code->result.kind=op->kind;
@@ -261,7 +261,7 @@ intercodes* translate_exp(ASTNode* root,operand* op){
                 return codes;
             }
             if(root->child[0]->childNum==1){
-                char* name=root->child[0]->child[0]->stringVal;
+                char* name=root->child[0]->child[0]->val.stringVal;
                 symbol* entry=find_symbol(name);
                 int t1=new_temp();
                 operand* op1=malloc(sizeof(operand));
@@ -275,7 +275,7 @@ intercodes* translate_exp(ASTNode* root,operand* op){
                     code1->result.temp_flag=0;
                     code1->op1.kind=IR_CONSTANT;
                     code1->op1.temp_flag=0;
-                    code1->op1.u.value=root->child[2]->child[0]->intVal;
+                    code1->op1.u.value=root->child[2]->child[0]->val.intVal;
                     intercodes_add(codes,code1);
                 }
                 else if(exp_id(root->child[2])==1){
@@ -285,7 +285,7 @@ intercodes* translate_exp(ASTNode* root,operand* op){
                     code1->result.temp_flag=0;
                     code1->op1.kind=IR_VARIABLE;
                     code1->op1.temp_flag=0;
-                    code1->op1.var_name=find_symbol(root->child[2]->child[0]->stringVal)->entry_name;
+                    code1->op1.var_name=find_symbol(root->child[2]->child[0]->val.stringVal)->entry_name;
                     intercodes_add(codes,code1);
                 }
                 else{
@@ -367,12 +367,12 @@ intercodes* translate_exp(ASTNode* root,operand* op){
             if(exp_int(root->child[0])==1){
                 code->op1.kind=IR_CONSTANT;
                 code->op1.temp_flag=0;
-                code->op1.u.value=root->child[0]->child[0]->intVal;
+                code->op1.u.value=root->child[0]->child[0]->val.intVal;
             }
             else if(exp_id(root->child[0])==1){
                 code->op1.kind=IR_VARIABLE;
                 code->op1.temp_flag=0;
-                code->op1.var_name=find_symbol(root->child[0]->child[0]->stringVal)->entry_name;
+                code->op1.var_name=find_symbol(root->child[0]->child[0]->val.stringVal)->entry_name;
             }
             code->op2.kind=IR_VARIABLE;
             code->op2.temp_flag=1;
@@ -380,12 +380,12 @@ intercodes* translate_exp(ASTNode* root,operand* op){
             if(exp_int(root->child[2])==1){
                 code->op2.kind=IR_CONSTANT;
                 code->op2.temp_flag=0;
-                code->op2.u.value=root->child[2]->child[0]->intVal;
+                code->op2.u.value=root->child[2]->child[0]->val.intVal;
             }
             else if(exp_id(root->child[2])==1){
                 code->op2.kind=IR_VARIABLE;
                 code->op2.temp_flag=0;
-                code->op2.var_name=find_symbol(root->child[2]->child[0]->stringVal)->entry_name;
+                code->op2.var_name=find_symbol(root->child[2]->child[0]->val.stringVal)->entry_name;
             }
             intercodes_add(codes,code);
 
@@ -430,12 +430,12 @@ intercodes* translate_exp(ASTNode* root,operand* op){
             if(exp_int(root->child[0])==1){
                 code->op1.kind=IR_CONSTANT;
                 code->op1.temp_flag=0;
-                code->op1.u.value=root->child[0]->child[0]->intVal;
+                code->op1.u.value=root->child[0]->child[0]->val.intVal;
             }
             else if(exp_id(root->child[0])==1){
                 code->op1.kind=IR_VARIABLE;
                 code->op1.temp_flag=0;
-                code->op1.var_name=find_symbol(root->child[0]->child[0]->stringVal)->entry_name;
+                code->op1.var_name=find_symbol(root->child[0]->child[0]->val.stringVal)->entry_name;
             }
             code->op2.kind=IR_VARIABLE;
             code->op2.temp_flag=1;
@@ -443,12 +443,12 @@ intercodes* translate_exp(ASTNode* root,operand* op){
             if(exp_int(root->child[2])==1){
                 code->op2.kind=IR_CONSTANT;
                 code->op2.temp_flag=0;
-                code->op2.u.value=root->child[2]->child[0]->intVal;
+                code->op2.u.value=root->child[2]->child[0]->val.intVal;
             }
             else if(exp_id(root->child[2])==1){
                 code->op2.kind=IR_VARIABLE;
                 code->op2.temp_flag=0;
-                code->op2.var_name=find_symbol(root->child[2]->child[0]->stringVal)->entry_name;
+                code->op2.var_name=find_symbol(root->child[2]->child[0]->val.stringVal)->entry_name;
             }
             intercodes_add(codes,code);
 
@@ -492,12 +492,12 @@ intercodes* translate_exp(ASTNode* root,operand* op){
             if(exp_int(root->child[0])==1){
                 code->op1.kind=IR_CONSTANT;
                 code->op1.temp_flag=0;
-                code->op1.u.value=root->child[0]->child[0]->intVal;
+                code->op1.u.value=root->child[0]->child[0]->val.intVal;
             }
             else if(exp_id(root->child[0])==1){
                 code->op1.kind=IR_VARIABLE;
                 code->op1.temp_flag=0;
-                code->op1.var_name=find_symbol(root->child[0]->child[0]->stringVal)->entry_name;
+                code->op1.var_name=find_symbol(root->child[0]->child[0]->val.stringVal)->entry_name;
             }
             code->op2.kind=IR_VARIABLE;
             code->op2.temp_flag=1;
@@ -505,12 +505,12 @@ intercodes* translate_exp(ASTNode* root,operand* op){
             if(exp_int(root->child[2])==1){
                 code->op2.kind=IR_CONSTANT;
                 code->op2.temp_flag=0;
-                code->op2.u.value=root->child[2]->child[0]->intVal;
+                code->op2.u.value=root->child[2]->child[0]->val.intVal;
             }
             else if(exp_id(root->child[2])==1){
                 code->op2.kind=IR_VARIABLE;
                 code->op2.temp_flag=0;
-                code->op2.var_name=find_symbol(root->child[2]->child[0]->stringVal)->entry_name;
+                code->op2.var_name=find_symbol(root->child[2]->child[0]->val.stringVal)->entry_name;
             }
             intercodes_add(codes,code);
 
@@ -555,12 +555,12 @@ intercodes* translate_exp(ASTNode* root,operand* op){
             if(exp_int(root->child[0])==1){
                 code->op1.kind=IR_CONSTANT;
                 code->op1.temp_flag=0;
-                code->op1.u.value=root->child[0]->child[0]->intVal;
+                code->op1.u.value=root->child[0]->child[0]->val.intVal;
             }
             else if(exp_id(root->child[0])==1){
                 code->op1.kind=IR_VARIABLE;
                 code->op1.temp_flag=0;
-                code->op1.var_name=find_symbol(root->child[0]->child[0]->stringVal)->entry_name;
+                code->op1.var_name=find_symbol(root->child[0]->child[0]->val.stringVal)->entry_name;
             }
             code->op2.kind=IR_VARIABLE;
             code->op2.temp_flag=1;
@@ -568,12 +568,12 @@ intercodes* translate_exp(ASTNode* root,operand* op){
             if(exp_int(root->child[2])==1){
                 code->op2.kind=IR_CONSTANT;
                 code->op2.temp_flag=0;
-                code->op2.u.value=root->child[2]->child[0]->intVal;
+                code->op2.u.value=root->child[2]->child[0]->val.intVal;
             }
             else if(exp_id(root->child[2])==1){
                 code->op2.kind=IR_VARIABLE;
                 code->op2.temp_flag=0;
-                code->op2.var_name=find_symbol(root->child[2]->child[0]->stringVal)->entry_name;
+                code->op2.var_name=find_symbol(root->child[2]->child[0]->val.stringVal)->entry_name;
             }
             intercodes_add(codes,code);
 
@@ -715,7 +715,7 @@ intercodes* translate_exp(ASTNode* root,operand* op){
             return translate_exp(root->child[1],op);
         }
         else if(strcmp(root->child[1]->name,"LP")==0){
-            symbol* func_entry=find_symbol(root->child[0]->stringVal);
+            symbol* func_entry=find_symbol(root->child[0]->val.stringVal);
             //printf("%s\n",func_entry->name);
             if(strcmp(func_entry->name,"read")==0){
                 if(!op){
@@ -772,7 +772,7 @@ intercodes* translate_exp(ASTNode* root,operand* op){
     }
     else if(root->childNum==4){
         if(strcmp(root->child[1]->name,"LP")==0){
-            symbol* func_entry=find_symbol(root->child[0]->stringVal);
+            symbol* func_entry=find_symbol(root->child[0]->val.stringVal);
 
             arglist* args=malloc(sizeof(arglist));
             args->head=NULL;
@@ -900,12 +900,12 @@ intercodes* translate_stmt(ASTNode* root){
         if(exp_int(root->child[1])==1){
             code2->result.kind=IR_CONSTANT;
             code2->result.temp_flag=0;
-            code2->result.u.value=root->child[1]->child[0]->intVal;
+            code2->result.u.value=root->child[1]->child[0]->val.intVal;
         }
         else if(exp_id(root->child[1])==1){
             code2->result.kind=IR_VARIABLE;
             code2->result.temp_flag=0;
-            code2->result.var_name=find_symbol(root->child[1]->child[0]->stringVal)->entry_name;
+            code2->result.var_name=find_symbol(root->child[1]->child[0]->val.stringVal)->entry_name;
         }        
         intercodes_add(codes,code2);
 
@@ -1023,22 +1023,22 @@ intercodes* translate_cond(ASTNode* root,int label1,int label2){
         intercodes_merge(codes,codes2);
 
         int relop=0;
-        if(strcmp(root->child[1]->stringVal,">")==0){
+        if(strcmp(root->child[1]->val.stringVal,">")==0){
             relop=IR_GT;
         }
-        else if(strcmp(root->child[1]->stringVal,"<")==0){
+        else if(strcmp(root->child[1]->val.stringVal,"<")==0){
             relop=IR_LT;
         }
-        else if(strcmp(root->child[1]->stringVal,">=")==0){
+        else if(strcmp(root->child[1]->val.stringVal,">=")==0){
             relop=IR_GE;
         }
-        else if(strcmp(root->child[1]->stringVal,"<=")==0){
+        else if(strcmp(root->child[1]->val.stringVal,"<=")==0){
             relop=IR_LE;
         }
-        else if(strcmp(root->child[1]->stringVal,"==")==0){
+        else if(strcmp(root->child[1]->val.stringVal,"==")==0){
             relop=IR_EQ;
         }
-        else if(strcmp(root->child[1]->stringVal,"!=")==0){
+        else if(strcmp(root->child[1]->val.stringVal,"!=")==0){
             relop=IR_NEQ;
         }
 
@@ -1612,14 +1612,14 @@ intercodes* translate_array_struct2(ASTNode* root,operand* op){
 }
 symbol* struct_array_offset(ASTNode* root,int *offset,array_list** array_head,intercodes* codes,int *temp){
     if(root->childNum==1){
-        symbol*entry=find_symbol(root->child[0]->stringVal);
+        symbol*entry=find_symbol(root->child[0]->val.stringVal);
         *array_head=entry->array_head;
         *offset=0;
         return entry;
     }
     else if(root->childNum==3){
         symbol*entry=struct_array_offset(root->child[0],offset,array_head,codes,temp);
-        symbol*entry2=find_symbol(root->child[2]->stringVal);
+        symbol*entry2=find_symbol(root->child[2]->val.stringVal);
         *offset=*offset+entry2->struct_offset;
         *array_head=entry2->array_head;
         return entry;
@@ -1627,7 +1627,7 @@ symbol* struct_array_offset(ASTNode* root,int *offset,array_list** array_head,in
     else if(root->childNum==4){
         symbol*entry=struct_array_offset(root->child[0],offset,array_head,codes,temp);
         if(strcmp(root->child[2]->child[0]->name,"INT")==0){
-            *offset=*offset+root->child[2]->child[0]->intVal*(*array_head)->array_size;
+            *offset=*offset+root->child[2]->child[0]->val.intVal*(*array_head)->array_size;
         }
         else{
             if(*temp==0){
@@ -1694,13 +1694,13 @@ symbol* struct_array_offset(ASTNode* root,int *offset,array_list** array_head,in
 }
 symbol* struct_array_type(ASTNode* root, int *dim){
      if(root->childNum==1){
-        symbol*entry=find_symbol(root->child[0]->stringVal);
+        symbol*entry=find_symbol(root->child[0]->val.stringVal);
         *dim=entry->dim;
         return entry;
     }
     else if(root->childNum==3){
         symbol*entry=struct_array_type(root->child[0],dim);
-        symbol*entry2=find_symbol(root->child[2]->stringVal);
+        symbol*entry2=find_symbol(root->child[2]->val.stringVal);
         *dim=entry2->dim;
         return entry2;
     }
