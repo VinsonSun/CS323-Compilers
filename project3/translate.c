@@ -24,7 +24,7 @@ void translate_extdeflist(ASTNode* root, intercodes* codes){
     intercodes_merge(codes,codes1);
 }
 void translate_extdef(ASTNode* root, intercodes* codes){
-    if(root->num==3&&strcmp(root->child[2]->name,"CompSt")==0){
+    if(root->childNum==3&&strcmp(root->child[2]->name,"CompSt")==0){
         reset_temp();
         intercodes *codes1 = malloc(sizeof(intercodes));
         codes1->head = NULL;
@@ -90,16 +90,16 @@ void translate_def(ASTNode* root, intercodes* codes){
     translate_declist(root->child[1],codes);
 }
 void translate_declist(ASTNode* root, intercodes* codes){
-    if(root->num==1){
+    if(root->childNum==1){
         translate_dec(root->child[0],codes);
     }
-    else if(root->num==3){
+    else if(root->childNum==3){
         translate_dec(root->child[0],codes);
         translate_declist(root->child[2],codes);
     }
 }
 void translate_dec(ASTNode* root, intercodes* codes){
-    if(root->num==3){
+    if(root->childNum==3){
         translate_vardec(root->child[0],codes);
         operand* op=malloc(sizeof(operand));
         op->kind=IR_VARIABLE;
@@ -108,12 +108,12 @@ void translate_dec(ASTNode* root, intercodes* codes){
         intercodes* codes1=translate_exp(root->child[2],op);
         intercodes_merge(codes,codes1);
     }
-    else if(root->num==1){
+    else if(root->childNum==1){
         translate_vardec(root->child[0],codes);
     }
 }
 void translate_vardec(ASTNode* root, intercodes* codes){
-    if(root->num==1){
+    if(root->childNum==1){
         symbol* entry=find_symbol(root->child[0]->stringVal);
         if(entry->entry_name==-1){
             int size=entry->size;
@@ -129,7 +129,7 @@ void translate_vardec(ASTNode* root, intercodes* codes){
             intercodes_add(codes,code);*/
         }
     }
-    else if(root->num==4){
+    else if(root->childNum==4){
         translate_vardec(root->child[0],codes);
     }
 }
@@ -138,7 +138,7 @@ intercodes* translate_exp(ASTNode* root,operand* op){
     intercodes *codes = malloc(sizeof(intercodes));
     codes->head = NULL;
     codes->tail = NULL;
-    if(root->num==1){
+    if(root->childNum==1){
         if(strcmp(root->child[0]->name,"INT")==0){
             if(!op){
                 return codes;
@@ -176,7 +176,7 @@ intercodes* translate_exp(ASTNode* root,operand* op){
             return codes;
         }
     }
-    else if(root->num==2){
+    else if(root->childNum==2){
         if(strcmp(root->child[0]->name,"MINUS")==0){
             int t1=new_temp();
             operand* op1=malloc(sizeof(operand));
@@ -251,7 +251,7 @@ intercodes* translate_exp(ASTNode* root,operand* op){
             return codes;
         }
     }
-    else if(root->num==3){
+    else if(root->childNum==3){
         if(strcmp(root->child[1]->name,"ASSIGNOP")==0){
             int dim=0;
             symbol* entry1=struct_array_type(root->child[0],&dim);
@@ -260,7 +260,7 @@ intercodes* translate_exp(ASTNode* root,operand* op){
                 intercodes_merge(codes,codes1);
                 return codes;
             }
-            if(root->child[0]->num==1){
+            if(root->child[0]->childNum==1){
                 char* name=root->child[0]->child[0]->stringVal;
                 symbol* entry=find_symbol(name);
                 int t1=new_temp();
@@ -316,12 +316,12 @@ intercodes* translate_exp(ASTNode* root,operand* op){
 
                 return codes;
             }
-            else if(root->child[0]->num==3){
+            else if(root->child[0]->childNum==3){
                 intercodes* codes1=translate_array_struct1(root,op);
                 intercodes_merge(codes,codes1);
                 return codes;
             }
-            else if(root->child[0]->num==4){
+            else if(root->child[0]->childNum==4){
                 intercodes* codes1=translate_array_struct1(root,op);
                 intercodes_merge(codes,codes1);
                 return codes;
@@ -770,7 +770,7 @@ intercodes* translate_exp(ASTNode* root,operand* op){
             return codes;
         }
     }
-    else if(root->num==4){
+    else if(root->childNum==4){
         if(strcmp(root->child[1]->name,"LP")==0){
             symbol* func_entry=find_symbol(root->child[0]->stringVal);
 
@@ -874,14 +874,14 @@ intercodes* translate_stmt(ASTNode* root){
     intercodes *codes = malloc(sizeof(intercodes));
     codes->head = NULL;
     codes->tail = NULL;
-    if(root->num==1){
+    if(root->childNum==1){
         translate_compst(root->child[0],codes);
         return codes;
     }
-    else if(root->num==2){
+    else if(root->childNum==2){
         return translate_exp(root->child[0],NULL);
     }
-    else if(root->num==3){
+    else if(root->childNum==3){
         int t1=new_temp();
         operand* op1=malloc(sizeof(operand));
         op1->kind=IR_VARIABLE;
@@ -911,7 +911,7 @@ intercodes* translate_stmt(ASTNode* root){
 
         return codes;
     }
-    else if(root->num==5){
+    else if(root->childNum==5){
         if(strcmp(root->child[0]->name,"IF")==0){
             int label1=new_label();
             int label2=new_label();
@@ -962,7 +962,7 @@ intercodes* translate_stmt(ASTNode* root){
             return codes;
         }
     }
-    else if(root->num==7){
+    else if(root->childNum==7){
         int label1=new_label();
         int label2=new_label();
         int label3=new_label();
@@ -1000,10 +1000,10 @@ intercodes* translate_cond(ASTNode* root,int label1,int label2){
     intercodes *codes = malloc(sizeof(intercodes));
     codes->head = NULL;
     codes->tail = NULL;    
-    if(root->num==2&&strcmp(root->child[0]->name,"NOT")==0){
+    if(root->childNum==2&&strcmp(root->child[0]->name,"NOT")==0){
         return translate_cond(root->child[1],label2,label1);
     }
-    else if(root->num==3&&strcmp(root->child[1]->name,"RELOP")==0){
+    else if(root->childNum==3&&strcmp(root->child[1]->name,"RELOP")==0){
         int t1=new_temp();
         operand* op1=malloc(sizeof(operand));
         op1->kind=IR_VARIABLE;
@@ -1059,7 +1059,7 @@ intercodes* translate_cond(ASTNode* root,int label1,int label2){
 
         return codes;
     }   
-    else if(root->num==3&&strcmp(root->child[1]->name,"AND")==0){
+    else if(root->childNum==3&&strcmp(root->child[1]->name,"AND")==0){
         int label0=new_label();
 
         intercodes* codes1=translate_cond(root->child[0],label0,label2);
@@ -1074,7 +1074,7 @@ intercodes* translate_cond(ASTNode* root,int label1,int label2){
 
         return codes;
     }
-    else if(root->num==3&&strcmp(root->child[1]->name,"OR")==0){
+    else if(root->childNum==3&&strcmp(root->child[1]->name,"OR")==0){
         int label0=new_label();
 
         intercodes* codes1=translate_cond(root->child[0],label1,label0);
@@ -1122,7 +1122,7 @@ intercodes* translate_args(ASTNode* root,arglist** arg_head){
     codes->head = NULL;
     codes->tail = NULL;
 
-    if(root->num==1){
+    if(root->childNum==1){
         int t1=new_temp();
         operand* op1=malloc(sizeof(operand));
         op1->kind=IR_VARIABLE;
@@ -1139,7 +1139,7 @@ intercodes* translate_args(ASTNode* root,arglist** arg_head){
 
         return codes;
     }
-    else if(root->num==3){
+    else if(root->childNum==3){
         int t1=new_temp();
         operand* op1=malloc(sizeof(operand));
         op1->kind=IR_VARIABLE;
@@ -1611,20 +1611,20 @@ intercodes* translate_array_struct2(ASTNode* root,operand* op){
     }
 }
 symbol* struct_array_offset(ASTNode* root,int *offset,array_list** array_head,intercodes* codes,int *temp){
-    if(root->num==1){
+    if(root->childNum==1){
         symbol*entry=find_symbol(root->child[0]->stringVal);
         *array_head=entry->array_head;
         *offset=0;
         return entry;
     }
-    else if(root->num==3){
+    else if(root->childNum==3){
         symbol*entry=struct_array_offset(root->child[0],offset,array_head,codes,temp);
         symbol*entry2=find_symbol(root->child[2]->stringVal);
         *offset=*offset+entry2->struct_offset;
         *array_head=entry2->array_head;
         return entry;
     }
-    else if(root->num==4){
+    else if(root->childNum==4){
         symbol*entry=struct_array_offset(root->child[0],offset,array_head,codes,temp);
         if(strcmp(root->child[2]->child[0]->name,"INT")==0){
             *offset=*offset+root->child[2]->child[0]->intVal*(*array_head)->array_size;
@@ -1693,18 +1693,18 @@ symbol* struct_array_offset(ASTNode* root,int *offset,array_list** array_head,in
     }
 }
 symbol* struct_array_type(ASTNode* root, int *dim){
-     if(root->num==1){
+     if(root->childNum==1){
         symbol*entry=find_symbol(root->child[0]->stringVal);
         *dim=entry->dim;
         return entry;
     }
-    else if(root->num==3){
+    else if(root->childNum==3){
         symbol*entry=struct_array_type(root->child[0],dim);
         symbol*entry2=find_symbol(root->child[2]->stringVal);
         *dim=entry2->dim;
         return entry2;
     }
-    else if(root->num==4){
+    else if(root->childNum==4){
         symbol*entry=struct_array_type(root->child[0],dim);
         *dim=*dim-1;
         return entry;
@@ -1923,7 +1923,7 @@ intercodes* array_assignop(ASTNode* root){
 }
 int exp_int(ASTNode* root){
     return 0;
-    if(root->num==1&&strcmp(root->child[0]->name,"INT")==0){
+    if(root->childNum==1&&strcmp(root->child[0]->name,"INT")==0){
         return 1;
     }
     else{
@@ -1933,7 +1933,7 @@ int exp_int(ASTNode* root){
 
 int exp_id(ASTNode* root){
     return 0;
-    if(root->num==1&&strcmp(root->child[0]->name,"ID")==0){
+    if(root->childNum==1&&strcmp(root->child[0]->name,"ID")==0){
         return 1;
     }
     else{

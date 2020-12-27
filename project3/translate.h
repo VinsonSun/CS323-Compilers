@@ -2,7 +2,7 @@
 #define TRANSLATEH 
 
 #include "inter.h"
-// #include "symbol.h"
+#include "symbol.h"
 #include"ast.h"
 
 typedef struct arg_list_t arg_list;
