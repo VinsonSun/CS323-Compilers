@@ -1,0 +1,37 @@
+FUNCTION main :
+N := #30
+num := #0
+i := #1
+k := #1
+LABEL label1 :
+IF k <= N GOTO label2
+GOTO label3
+LABEL label2 :
+LABEL label4 :
+IF i <= k GOTO label5
+GOTO label6
+LABEL label5 :
+t2 := k / i
+t2 := t2 * i
+IF k == t2 GOTO label7
+GOTO label8
+LABEL label7 :
+t3 := num + #1
+num := t3
+LABEL label8 :
+t4 := i + #1
+i := t4
+GOTO label4
+LABEL label6 :
+IF num == #2 GOTO label9
+GOTO label10
+LABEL label9 :
+WRITE k
+LABEL label10 :
+i := #1
+num := #0
+t5 := k + #1
+k := t5
+GOTO label1
+LABEL label3 :
+RETURN #0
