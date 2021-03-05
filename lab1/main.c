@@ -14,5 +14,5 @@ int main(void){
     puts(string);
     printf("%d\n", linked_list_size(head));
     linked_list_free(head);
-    return 0;
+    return 1;
 }
